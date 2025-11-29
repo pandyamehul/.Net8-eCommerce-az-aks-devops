@@ -25,12 +25,8 @@ public class Program
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
 
-        // Add Automapper
-        builder.Services.AddAutoMapper(config =>
-        {
-            config.AddProfile<ApplicationUserMappingProfile>();
-            config.AddProfile<RegisterRequestMappingProfile>();
-        });
+        // Configure Mapster
+        MappingConfig.RegisterMappings();
 
         //------ Configure request pipeline ------ //
         var app = builder.Build();

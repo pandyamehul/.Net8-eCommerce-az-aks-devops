@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿using Mapster;
 using eCommerce.Core.DTO;
 using eCommerce.Core.Entities;
 using eCommerce.Core.RepositoryContracts;
@@ -9,12 +9,10 @@ namespace eCommerce.Core.Services;
 internal class UsersService : IUsersService
 {
     private readonly IUsersRepository _usersRepository;
-    private readonly IMapper _mapper;
 
-    public UsersService(IUsersRepository usersRepository, IMapper mapper)
+    public UsersService(IUsersRepository usersRepository)
     {
         _usersRepository = usersRepository;
-        _mapper = mapper;
     }
 
 
@@ -35,7 +33,7 @@ internal class UsersService : IUsersService
         //    "dummy token", 
         //    Success: true
         //);
-        return _mapper.Map<AuthenticationResponse>(user) with { Success = true, Token = "token" };
+        return user.Adapt<AuthenticationResponse>() with { Success = true, Token = "token" };
     }
 
 
@@ -49,7 +47,7 @@ internal class UsersService : IUsersService
         //     Password = registerRequest.Password,
         //     Gender = registerRequest.Gender.ToString()
         // };
-        ApplicationUser user = _mapper.Map<ApplicationUser>(registerRequest);
+        ApplicationUser user = registerRequest.Adapt<ApplicationUser>();
 
         // Add user to the repository
         ApplicationUser? registeredUser = await _usersRepository.AddUser(user);
@@ -67,6 +65,6 @@ internal class UsersService : IUsersService
         //    "token",
         //    Success: true
         //);
-        return _mapper.Map<AuthenticationResponse>(registeredUser) with { Success = true, Token = "token" };
+        return registeredUser.Adapt<AuthenticationResponse>() with { Success = true, Token = "token" };
     }
 }

@@ -1,20 +1,27 @@
-﻿using AutoMapper;
+﻿using Mapster;
 using eCommerce.Core.DTO;
 using eCommerce.Core.Entities;
 
 namespace eCommerce.Core.Mappers;
 
-public class ApplicationUserMappingProfile : Profile
+public static class MappingConfig
 {
-    public ApplicationUserMappingProfile()
+    public static void RegisterMappings()
     {
-        CreateMap<ApplicationUser, AuthenticationResponse>()
-          .ForMember(dest => dest.UserID, opt => opt.MapFrom(src => src.UserID))
-          .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-          .ForMember(dest => dest.PersonName, opt => opt.MapFrom(src => src.PersonName))
-          .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
-          .ForMember(dest => dest.Success, opt => opt.Ignore())
-          .ForMember(dest => dest.Token, opt => opt.Ignore())
-        ;
+        // RegisterRequest to ApplicationUser
+        TypeAdapterConfig<RegisterRequest, ApplicationUser>
+            .NewConfig()
+            .Map(dest => dest.Gender, src => src.Gender.ToString())
+            .Ignore(dest => dest.UserID);
+
+        // ApplicationUser to AuthenticationResponse
+        TypeAdapterConfig<ApplicationUser, AuthenticationResponse>
+            .NewConfig()
+            .Map(dest => dest.UserID, src => src.UserID)
+            .Map(dest => dest.Email, src => src.Email)
+            .Map(dest => dest.PersonName, src => src.PersonName)
+            .Map(dest => dest.Gender, src => src.Gender)
+            .Ignore(dest => dest.Success)
+            .Ignore(dest => dest.Token);
     }
 }
