@@ -1,6 +1,7 @@
 using eCommerce.API.Middlewares;
 using eCommerce.Core;
 using eCommerce.Infrastructure;
+using System.Text.Json.Serialization;
 
 namespace eCommerce.API;
 
@@ -13,12 +14,15 @@ public class Program
 
         //Add infrastructure services
         builder.Services.AddInfrastructure();
-        
+
         //Add Core services
         builder.Services.AddCore();
 
-        //Add Controller to service collection
-        builder.Services.AddControllers();
+        // Add controllers to the service collection
+        builder.Services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
 
 
         //------ Configure request pipeline ------ //
@@ -31,7 +35,7 @@ public class Program
         app.UseRouting();
 
         //Authentication & Authorization
-        app.UseAuthentication();        
+        app.UseAuthentication();
         app.UseAuthorization();
 
         //Controller routes
