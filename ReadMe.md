@@ -2,7 +2,7 @@
 
 - [eCommerce - Web Application (ASP .NET Core Microservices with Azure DevOps \& AKS)](#ecommerce---web-application-asp-net-core-microservices-with-azure-devops--aks)
   - [Background](#background)
-  - [Technologies Used](#technologies-used)
+  - [Technologies \& Patterns Used](#technologies--patterns-used)
 
 ## Background
 
@@ -10,7 +10,9 @@
 - Real-world experience in microservices development
 - Complete eCommerce Project: Build a fully functional eCommerce platform featuring users, products, and orders microservices.
 
-## Technologies Used
+## Technologies & Patterns Used
 
-- ASP.NET Core 8
-- Rest API
+- ASP.NET Core 8 (Web API in c#)
+- Microservices Architecture
+- REST API (HTTP Methods - GET, POST, PUT, DELETE)
+- Automapper (Object to Object Mapping)

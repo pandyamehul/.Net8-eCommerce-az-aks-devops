@@ -26,7 +26,7 @@
 - ASP.NET Core 8 (Web API in c#)
 - Microservices Architecture
 - REST API (HTTP Methods - GET, POST, PUT, DELETE)
-- Automapper
+- Automapper (Object to Object Mapping)
 
 ## Session# 1 : Implementation of User Microservice
 
@@ -39,3 +39,4 @@
 - API solution configured and implemented request pipeline.
 - Created User Controller to serve register and login flow.
 - Created rest client to test API endpoints.
+- Implemented automapper to map request and response objects.

@@ -1,7 +1,8 @@
-using eCommerce.API.Middlewares;
-using eCommerce.Core;
 using eCommerce.Infrastructure;
+using eCommerce.Core;
+using eCommerce.API.Middlewares;
 using System.Text.Json.Serialization;
+using eCommerce.Core.Mappers;
 
 namespace eCommerce.API;
 
@@ -24,6 +25,12 @@ public class Program
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
 
+        // Add Automapper
+        builder.Services.AddAutoMapper(config =>
+        {
+            config.AddProfile<ApplicationUserMappingProfile>();
+            config.AddProfile<RegisterRequestMappingProfile>();
+        });
 
         //------ Configure request pipeline ------ //
         var app = builder.Build();
