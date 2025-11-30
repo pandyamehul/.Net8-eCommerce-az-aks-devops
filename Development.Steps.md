@@ -10,6 +10,7 @@
     - [Automapper Integration](#automapper-integration)
     - [Switch from Automapper to Mapster](#switch-from-automapper-to-mapster)
     - [Postgres Integration with Dapper (ORM tool for data access)](#postgres-integration-with-dapper-orm-tool-for-data-access)
+    - [FluentValidation Integration for Request Validation](#fluentvalidation-integration-for-request-validation)
 
 ## Background
 
@@ -32,8 +33,11 @@
 - Microservices Architecture
 - REST API (HTTP Methods - GET, POST, PUT, DELETE)
 - Mapster (Object to Object Mapping), earlier used AutoMapper
+- Repository Pattern
 - Dapper (Micro ORM for data access)
 - PostgreSQL (Relational Database) in docker container
+- FluentValidation (Request validation)
+- Dependency Injection (DI) Pattern
 
 ## Step# 1 : Implementation of User Microservice
 
@@ -72,3 +76,12 @@
 - Used Dapper for data access in User repository.
 - Tested user registration and login flows with Postgres database.
 - Verified data is correctly stored and retrieved from Postgres.
+
+### FluentValidation Integration for Request Validation
+
+- Added FluentValidation and FluentValidation.DependencyInjectionExtensions nuget packages to Core project.
+- Created validators for User registration and login request models.
+- Registered validators in the DI container in DependencyInjection.cs.
+- Updated UserController to use FluentValidation for validating incoming requests.
+- Tested validation scenarios to ensure invalid requests are properly handled.
+- Verified that valid requests pass validation and are processed correctly.

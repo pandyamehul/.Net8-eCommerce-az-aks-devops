@@ -16,5 +16,8 @@
 - Microservices Architecture
 - REST API (HTTP Methods - GET, POST, PUT, DELETE)
 - Mapster (Object to Object Mapping), earlier used AutoMapper
+- Repository Pattern
 - Dapper (Micro ORM for data access)
 - PostgreSQL (Relational Database) in docker container
+- FluentValidation (Request validation)
+- Dependency Injection (DI) Pattern
