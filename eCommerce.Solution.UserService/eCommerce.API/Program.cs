@@ -33,6 +33,23 @@ public class Program
         // Configure Mapster
         MappingConfig.RegisterMappings();
 
+        // Add API Explorer Service - Swagger
+        builder.Services.AddEndpointsApiExplorer();
+
+        // Add swagger generation service to create swagger specification
+        builder.Services.AddSwaggerGen();
+
+        //Add cors services
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder => {
+                builder.WithOrigins("http://localhost:5013")
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            });
+        });
+
+        //-----------------------------------------//
         //------ Configure request pipeline ------ //
         var app = builder.Build();
 
@@ -41,6 +58,10 @@ public class Program
 
         //Add Routings
         app.UseRouting();
+
+        // Add Swagger Support
+        app.UseSwagger(); //Adds endpoint that can serve the swagger.json
+        app.UseSwaggerUI(); //Adds swagger UI (interactive page to explore and test API endpoints)
 
         //Authentication & Authorization
         app.UseAuthentication();

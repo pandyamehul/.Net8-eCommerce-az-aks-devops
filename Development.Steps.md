@@ -11,6 +11,8 @@
     - [Switch from Automapper to Mapster](#switch-from-automapper-to-mapster)
     - [Postgres Integration with Dapper (ORM tool for data access)](#postgres-integration-with-dapper-orm-tool-for-data-access)
     - [FluentValidation Integration for Request Validation](#fluentvalidation-integration-for-request-validation)
+    - [Added Swagger Support with CORS Policy](#added-swagger-support-with-cors-policy)
+  - [Step# 2: Implementation of Product Microservice](#step-2-implementation-of-product-microservice)
 
 ## Background
 
@@ -38,6 +40,9 @@
 - PostgreSQL (Relational Database) in docker container
 - FluentValidation (Request validation)
 - Dependency Injection (DI) Pattern
+- Swagger (API Documentation)
+- CORS Policy Configuration
+- Angular 17 (Frontend application)
 
 ## Step# 1 : Implementation of User Microservice
 
@@ -85,3 +90,16 @@
 - Updated UserController to use FluentValidation for validating incoming requests.
 - Tested validation scenarios to ensure invalid requests are properly handled.
 - Verified that valid requests pass validation and are processed correctly.
+
+### Added Swagger Support with CORS Policy
+
+- Added Swagger services in Program.cs to generate API documentation.
+- Configured Swagger middleware in the request pipeline to serve swagger.json and Swagger UI.
+- Added CORS services and configured a default policy to allow requests from the Angular frontend running on http://localhost:5013.
+- Tested Swagger UI to ensure API endpoints are documented and accessible.
+- Verified CORS policy allows requests from the specified origin without issues.
+- Tested API endpoints from the Angular frontend to ensure proper communication with the User microservice.
+- Verified that Swagger UI and CORS configurations work as expected in development environment.
+- Completed Step#1 implementation of User Microservice with all required features.
+
+## Step# 2: Implementation of Product Microservice

@@ -21,3 +21,6 @@
 - PostgreSQL (Relational Database) in docker container
 - FluentValidation (Request validation)
 - Dependency Injection (DI) Pattern
+- Swagger (API Documentation)
+- CORS Policy Configuration
+- Angular 17 (Frontend application)
