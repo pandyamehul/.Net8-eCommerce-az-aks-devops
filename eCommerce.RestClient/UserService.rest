@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
     "PersonName": "newuser",
-    "Password": "NewUser@123",
+    "PasswordHash": "NewUser@123",
     "Email": "newuser@example.com",
     "Gender": "Male"
 }
@@ -14,6 +14,7 @@ POST https://localhost:7012/api/auth/login
 Content-Type: application/json
 
 {
-  "username": "newuser",
-  "password": "NewUser@123"
+  "Email": "newuser@example.com",
+  "PasswordHash": "NewUser@123"
 }
+###

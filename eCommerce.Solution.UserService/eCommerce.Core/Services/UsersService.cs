@@ -18,7 +18,7 @@ internal class UsersService : IUsersService
 
     public async Task<AuthenticationResponse?> Login(LoginRequest loginRequest)
     {
-        ApplicationUser? user = await _usersRepository.GetUserByEmailAndPassword(loginRequest.Email, loginRequest.Password);
+        ApplicationUser? user = await _usersRepository.GetUserByEmailAndPassword(loginRequest.Email, loginRequest.PasswordHash);
 
         if (user == null)
         {

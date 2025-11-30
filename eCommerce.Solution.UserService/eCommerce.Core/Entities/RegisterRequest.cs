@@ -2,7 +2,7 @@
 
 public record RegisterRequest(
     string? Email,
-    string? Password,
+    string? PasswordHash,
     string? PersonName,
     GenderOptions Gender
 );

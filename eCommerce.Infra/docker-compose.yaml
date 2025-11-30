@@ -1,0 +1,23 @@
+services:
+  ecommerce.userdb:
+    image: postgres
+    container_name: ecommerce.userdb
+    restart: always
+    ports:
+      - "5433:5432"
+    volumes:
+      - ecommerce_userdb:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=eCommerceUsers
+    networks:
+      - ecommerce_network
+
+volumes:
+  ecommerce_userdb:
+
+networks:
+  ecommerce_network:
+    name: ecommerce_network
+    driver: bridge
