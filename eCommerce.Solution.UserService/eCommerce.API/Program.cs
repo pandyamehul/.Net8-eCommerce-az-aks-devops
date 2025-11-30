@@ -3,6 +3,8 @@ using eCommerce.Core;
 using eCommerce.API.Middlewares;
 using System.Text.Json.Serialization;
 using eCommerce.Core.Mappers;
+using FluentValidation;
+using eCommerce.Core.Validators;
 
 namespace eCommerce.API;
 
@@ -24,6 +26,9 @@ public class Program
         {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
+
+        // FluentValidation - Register validators from Core assembly
+        builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 
         // Configure Mapster
         MappingConfig.RegisterMappings();

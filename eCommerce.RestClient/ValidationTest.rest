@@ -1,0 +1,43 @@
+### Test empty email - should return validation error
+POST https://localhost:7012/api/auth/login
+Content-Type: application/json
+
+{
+  "Email": "",
+  "PasswordHash": "NewUser@123"
+}
+
+###
+
+### Test invalid email format - should return validation error
+POST https://localhost:7012/api/auth/login
+Content-Type: application/json
+
+{
+  "Email": "notanemail",
+  "PasswordHash": "NewUser@123"
+}
+
+###
+
+### Test valid email - should return 401 if user doesn't exist
+POST https://localhost:7012/api/auth/login
+Content-Type: application/json
+
+{
+  "Email": "newuser@example.com",
+  "PasswordHash": "NewUser@123"
+}
+
+###
+
+### Test register with empty fields
+POST https://localhost:7012/api/auth/register
+Content-Type: application/json
+
+{
+    "PersonName": "",
+    "PasswordHash": "",
+    "Email": "",
+    "Gender": "Male"
+}

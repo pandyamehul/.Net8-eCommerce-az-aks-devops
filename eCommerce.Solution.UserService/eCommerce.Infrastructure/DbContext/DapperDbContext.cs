@@ -18,6 +18,5 @@ public class DapperDbContext
         _connection = new NpgsqlConnection(connectionString);
     }
 
-
     public IDbConnection DbConnection => _connection;
 }

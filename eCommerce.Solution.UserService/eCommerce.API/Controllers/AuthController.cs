@@ -1,5 +1,6 @@
 ﻿using eCommerce.Core.DTO;
 using eCommerce.Core.ServiceContracts;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,17 @@ namespace eCommerce.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUsersService _usersService;
+        private readonly IValidator<RegisterRequest> _registerValidator;
+        private readonly IValidator<LoginRequest> _loginValidator;
 
-        public AuthController(IUsersService usersService)
+        public AuthController(
+            IUsersService usersService,
+            IValidator<RegisterRequest> registerValidator,
+            IValidator<LoginRequest> loginValidator)
         {
             _usersService = usersService;
+            _registerValidator = registerValidator;
+            _loginValidator = loginValidator;
         }
 
         //Endpoint for user registration use case
@@ -21,10 +29,18 @@ namespace eCommerce.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest registerRequest)
         {
-            //Check for invalid registerRequest
-            if (registerRequest == null)
+            //Validate the request using FluentValidation
+            var validationResult = await _registerValidator.ValidateAsync(registerRequest);
+            if (!validationResult.IsValid)
             {
-                return BadRequest("Invalid registration data");
+                var errors = validationResult.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                return BadRequest(new { errors });
             }
 
             //Call the UsersService to handle registration
@@ -32,7 +48,7 @@ namespace eCommerce.API.Controllers
 
             if (authenticationResponse == null || authenticationResponse.Success == false)
             {
-                return BadRequest(authenticationResponse);
+                return BadRequest(new { message = "Registration failed", details = authenticationResponse });
             }
 
             return Ok(authenticationResponse);
@@ -43,17 +59,25 @@ namespace eCommerce.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest loginRequest)
         {
-            //Check for invalid LoginRequest
-            if (loginRequest == null)
+            //Validate the request using FluentValidation
+            var validationResult = await _loginValidator.ValidateAsync(loginRequest);
+            if (!validationResult.IsValid)
             {
-                return BadRequest("Invalid login data");
+                var errors = validationResult.Errors
+                    .GroupBy(e => e.PropertyName)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(e => e.ErrorMessage).ToArray()
+                    );
+
+                return BadRequest(new { errors });
             }
 
             AuthenticationResponse? authenticationResponse = await _usersService.Login(loginRequest);
 
             if (authenticationResponse == null || authenticationResponse.Success == false)
             {
-                return Unauthorized(authenticationResponse);
+                return Unauthorized(new { message = "Invalid email or password" });
             }
 
             return Ok(authenticationResponse);
