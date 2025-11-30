@@ -4,7 +4,12 @@
   - [Background](#background)
   - [Features (Technical and non-technical)](#features-technical-and-non-technical)
   - [Technologies \& Patterns Used](#technologies--patterns-used)
-  - [Session# 1 : Implementation of User Microservice](#session-1--implementation-of-user-microservice)
+  - [Step# 1 : Implementation of User Microservice](#step-1--implementation-of-user-microservice)
+    - [Initial Project setup](#initial-project-setup)
+    - [User Microservice Controller Implementation](#user-microservice-controller-implementation)
+    - [Automapper Integration](#automapper-integration)
+    - [Switch from Automapper to Mapster](#switch-from-automapper-to-mapster)
+    - [Postgres Integration with Dapper (ORM tool for data access)](#postgres-integration-with-dapper-orm-tool-for-data-access)
 
 ## Background
 
@@ -26,9 +31,13 @@
 - ASP.NET Core 8 (Web API in c#)
 - Microservices Architecture
 - REST API (HTTP Methods - GET, POST, PUT, DELETE)
-- Automapper (Object to Object Mapping)
+- Mapster (Object to Object Mapping), earlier used AutoMapper
+- Dapper (Micro ORM for data access)
+- PostgreSQL (Relational Database) in docker container
 
-## Session# 1 : Implementation of User Microservice
+## Step# 1 : Implementation of User Microservice
+
+### Initial Project setup
 
 - Created new folder ".NET Microservices w Azure DevOps & AKS"
 - Initialized git to track changes
@@ -37,6 +46,29 @@
 - Added "ASP.net web API" project
 - Added Dependency injection for core and Infra project.
 - API solution configured and implemented request pipeline.
+
+### User Microservice Controller Implementation
+
 - Created User Controller to serve register and login flow.
 - Created rest client to test API endpoints.
+
+### Automapper Integration
+
 - Implemented automapper to map request and response objects.
+
+### Switch from Automapper to Mapster
+
+- Removed automapper nuget package from core project.
+- Added Mapster and Mapster.DependencyInjection nuget packages to core project.
+- Updated mapping profiles and DI registrations to use Mapster instead of Automapper.
+- Tested user registration and login endpoints to ensure mapping works correctly.
+- Verified that all unit tests pass after the migration.
+
+### Postgres Integration with Dapper (ORM tool for data access)
+
+- Added Npgsql.EntityFrameworkCore.PostgreSQL nuget package to Infra project.
+- Configured Postgres connection string in appsettings.json file.
+- Implemented DbContext and entity configurations for User entity.
+- Used Dapper for data access in User repository.
+- Tested user registration and login flows with Postgres database.
+- Verified data is correctly stored and retrieved from Postgres.

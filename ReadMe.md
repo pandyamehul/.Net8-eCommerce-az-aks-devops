@@ -15,4 +15,6 @@
 - ASP.NET Core 8 (Web API in c#)
 - Microservices Architecture
 - REST API (HTTP Methods - GET, POST, PUT, DELETE)
-- Automapper (Object to Object Mapping)
+- Mapster (Object to Object Mapping), earlier used AutoMapper
+- Dapper (Micro ORM for data access)
+- PostgreSQL (Relational Database) in docker container
