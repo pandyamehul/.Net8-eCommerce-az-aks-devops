@@ -13,6 +13,7 @@
     - [FluentValidation Integration for Request Validation](#fluentvalidation-integration-for-request-validation)
     - [Added Swagger Support with CORS Policy](#added-swagger-support-with-cors-policy)
   - [Step# 2: Implementation of Product Microservice](#step-2-implementation-of-product-microservice)
+    - [Initial Project setup (Product Microservice)](#initial-project-setup-product-microservice)
 
 ## Background
 
@@ -103,3 +104,9 @@
 - Completed Step#1 implementation of User Microservice with all required features.
 
 ## Step# 2: Implementation of Product Microservice
+
+### Initial Project setup (Product Microservice)
+
+- Created new ASP.net web API project for Product Microservice.
+- Added Class Library projects (data access layer and business access layer) - core and Infra project for Product Microservice.
+- Added necessary Nuget packages - Mapster, FluentValidation, Dependency Injection extensions etc.
