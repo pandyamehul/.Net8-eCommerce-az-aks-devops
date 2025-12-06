@@ -24,3 +24,4 @@
 - Swagger (API Documentation)
 - CORS Policy Configuration
 - Angular 17 (Frontend application)
+- MySQL (Relational Database) in docker container

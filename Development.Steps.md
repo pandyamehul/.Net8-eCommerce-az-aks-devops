@@ -14,6 +14,8 @@
     - [Added Swagger Support with CORS Policy](#added-swagger-support-with-cors-policy)
   - [Step# 2: Implementation of Product Microservice](#step-2-implementation-of-product-microservice)
     - [Initial Project setup (Product Microservice)](#initial-project-setup-product-microservice)
+    - [MySQL Db Setup in Docker Container](#mysql-db-setup-in-docker-container)
+    - [Data Access Layer Implementation](#data-access-layer-implementation)
 
 ## Background
 
@@ -44,6 +46,7 @@
 - Swagger (API Documentation)
 - CORS Policy Configuration
 - Angular 17 (Frontend application)
+- MySQL (Relational Database) in docker container
 
 ## Step# 1 : Implementation of User Microservice
 
@@ -110,3 +113,17 @@
 - Created new ASP.net web API project for Product Microservice.
 - Added Class Library projects (data access layer and business access layer) - core and Infra project for Product Microservice.
 - Added necessary Nuget packages - Mapster, FluentValidation, Dependency Injection extensions etc.
+
+### MySQL Db Setup in Docker Container
+
+- Pulled MySQL Docker image from Docker Hub.
+- Created and started MySQL container with necessary environment variables (root password, database name etc.)
+- Verified MySQL container is running and accessible.
+- Created Product database and necessary tables using MySQL Workbench.
+- Updated docker-compose file to include MySQL service for Product Microservice.
+
+### Data Access Layer Implementation
+
+- Implemented Product entity and DbContext for MySQL database.
+- Created Product repository using Entity Framework Core for data access.
+

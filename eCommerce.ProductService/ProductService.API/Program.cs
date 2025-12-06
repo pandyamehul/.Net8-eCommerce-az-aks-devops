@@ -9,7 +9,7 @@ using FluentValidation;
 var builder = WebApplication.CreateBuilder(args);
 
 //Add DAL and BLL services
-builder.Services.AddDataAccessLayer();
+builder.Services.AddDataAccessLayer(builder.Configuration);
 builder.Services.AddBusinessLogicLayer();
 
 builder.Services.AddControllers();
