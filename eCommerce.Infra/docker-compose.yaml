@@ -14,8 +14,25 @@ services:
     networks:
       - ecommerce_network
 
+  ecommerce.productdb:
+    image: mysql:latest
+    container_name: ecommerce.productdb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql-secret-pw
+      MYSQL_DATABASE: eCommerceProducts
+      MYSQL_USER: mysqluser
+      MYSQL_PASSWORD: mysqlpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - ecommerce_productdb:/var/lib/mysql
+    networks:
+      - ecommerce_network
+
 volumes:
   ecommerce_userdb:
+  ecommerce_productdb:
 
 networks:
   ecommerce_network:
