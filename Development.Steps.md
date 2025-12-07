@@ -16,6 +16,7 @@
     - [Initial Project setup (Product Microservice)](#initial-project-setup-product-microservice)
     - [MySQL Db Setup in Docker Container](#mysql-db-setup-in-docker-container)
     - [Data Access Layer Implementation](#data-access-layer-implementation)
+    - [Business Access Layer Implementation](#business-access-layer-implementation)
 
 ## Background
 
@@ -119,11 +120,18 @@
 - Pulled MySQL Docker image from Docker Hub.
 - Created and started MySQL container with necessary environment variables (root password, database name etc.)
 - Verified MySQL container is running and accessible.
-- Created Product database and necessary tables using MySQL Workbench.
+- Created Product database and necessary tables with data using MySQL Workbench.
 - Updated docker-compose file to include MySQL service for Product Microservice.
 
 ### Data Access Layer Implementation
 
 - Implemented Product entity and DbContext for MySQL database.
 - Created Product repository using Entity Framework Core for data access.
+- Added Dependency Injection for DbContext and Product repository in the DI container.
+- Created Product service interface and implementation for data access layer.
+- Implemented Repository pattern for data access layer to abstract database operations, ref - ProductsRepository.cs and IProductsRepository.cs. 
+- Tested data access layer methods to ensure correct CRUD operations on Product entity.
 
+### Business Access Layer Implementation
+
+- Added DTO and IProductsService.cs in Business Access Layer project.
