@@ -4,5 +4,6 @@ public record ProductResponse(Guid ProductID, string ProductName, CategoryOption
 {
     public ProductResponse() : this(default, default, default, default, default)
     {
+
     }
 }

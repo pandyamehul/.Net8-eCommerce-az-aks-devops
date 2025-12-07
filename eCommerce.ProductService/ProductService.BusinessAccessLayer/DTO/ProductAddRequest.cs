@@ -4,5 +4,6 @@ public record ProductAddRequest(string ProductName, CategoryOptions Category, do
 {
     public ProductAddRequest() : this(default, default, default, default)
     {
+
     }
 }

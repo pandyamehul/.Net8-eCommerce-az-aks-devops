@@ -1,5 +1,7 @@
+using eCommerce.ProductService.BusinessAccessLayer.Mappers;
 using eCommerce.ProductsMicroService.API.Middleware;
 using eCommerce.ProductsService.BusinessLogicLayer;
+using eCommerce.ProductsService.BusinessLogicLayer.Validators;
 using eCommerce.ProductsService.DataAccessLayer;
 using FluentValidation;
 
@@ -14,9 +16,12 @@ builder.Services.AddBusinessLogicLayer();
 
 builder.Services.AddControllers();
 
-// FluentValidation - Register validators from Core assembly
-// builder.Services.AddValidatorsFromAssemblyContaining();
+//// FluentValidation - Register validators from Core assembly
+//builder.Services.AddValidatorsFromAssemblyContaining<ProductAddRequestValidator>();
+//builder.Services.AddValidatorsFromAssemblyContaining<ProductUpdateRequestValidator>();
 
+//// Configure Mapster
+//ProductMappingProfile.RegisterMappings();
 
 //-----------------------------------------//
 //------ Configure request pipeline ------ //

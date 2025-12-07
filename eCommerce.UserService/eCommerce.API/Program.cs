@@ -29,6 +29,7 @@ public class Program
 
         // FluentValidation - Register validators from Core assembly
         builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
 
         // Configure Mapster
         MappingConfig.RegisterMappings();
@@ -42,7 +43,8 @@ public class Program
         //Add cors services
         builder.Services.AddCors(options =>
         {
-            options.AddDefaultPolicy(builder => {
+            options.AddDefaultPolicy(builder =>
+            {
                 builder.WithOrigins("http://localhost:5013")
                 .AllowAnyMethod()
                 .AllowAnyHeader();

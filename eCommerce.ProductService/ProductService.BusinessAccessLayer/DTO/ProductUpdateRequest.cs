@@ -4,5 +4,6 @@ public record ProductUpdateRequest(Guid ProductID, string ProductName, CategoryO
 {
     public ProductUpdateRequest() : this(default, default, default, default, default)
     {
+
     }
 }
