@@ -1,5 +1,6 @@
 using eCommerce.ProductService.BusinessAccessLayer.Mappers;
 using eCommerce.ProductsMicroService.API.Middleware;
+using eCommerce.ProductsService.API.APIEndpoints;
 using eCommerce.ProductsService.BusinessLogicLayer;
 using eCommerce.ProductsService.BusinessLogicLayer.Validators;
 using eCommerce.ProductsService.DataAccessLayer;
@@ -36,5 +37,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapProductAPIEndpoints();
 
 app.Run();

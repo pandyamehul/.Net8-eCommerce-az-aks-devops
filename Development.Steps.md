@@ -17,6 +17,7 @@
     - [MySQL Db Setup in Docker Container](#mysql-db-setup-in-docker-container)
     - [Data Access Layer Implementation](#data-access-layer-implementation)
     - [Business Access Layer Implementation](#business-access-layer-implementation)
+    - [API Endpoints Implementation](#api-endpoints-implementation)
 
 ## Background
 
@@ -135,3 +136,14 @@
 ### Business Access Layer Implementation
 
 - Added DTO and IProductsService.cs in Business Access Layer project.
+- Added ProductMappingProfile.cs to configure Mapster mappings for Product entity and DTOs.
+- Implemented ProductsService.cs to handle business logic for Product operations.
+- Registered Business Access Layer services in the DI container.
+- Added FluentValidation validators for ProductAddRequest and ProductUpdateRequest DTOs.
+- Updated DependencyInjection.cs to register FluentValidation validators for Product requests.
+
+### API Endpoints Implementation
+
+- Implemented Product Service end point using Minimal API pattern.
+- Created endpoints for CRUD operations on Product entity (GetAllProducts, GetProductById, AddProduct, UpdateProduct, DeleteProduct).
+- Added request validation using FluentValidation for ProductAddRequest and ProductUpdateRequest.
