@@ -2,6 +2,8 @@
 using eCommerce.ProductsService.BusinessLogicLayer.ServiceContracts;
 using eCommerce.ProductsService.BusinessLogicLayer.Validators;
 using FluentValidation;
+using Mapster;
+using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace eCommerce.ProductsService.BusinessLogicLayer;
@@ -18,6 +20,11 @@ public static class DependencyInjection
 
         // Configure Mapster
         ProductMappingProfile.RegisterMappings();
+
+        // Register Mapster mapper
+        var config = TypeAdapterConfig.GlobalSettings;
+        services.AddSingleton(config);
+        services.AddScoped<IMapper, ServiceMapper>();
 
         services.AddScoped<IProductsService, ProductsService.BusinessLogicLayer.Services.ProductsService>();
 

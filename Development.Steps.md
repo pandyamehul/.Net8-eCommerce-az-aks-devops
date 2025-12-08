@@ -147,3 +147,8 @@
 - Implemented Product Service end point using Minimal API pattern.
 - Created endpoints for CRUD operations on Product entity (GetAllProducts, GetProductById, AddProduct, UpdateProduct, DeleteProduct).
 - Added request validation using FluentValidation for ProductAddRequest and ProductUpdateRequest.
+- Fix mapster mapping issues in ProductsService.cs and ProductMappingProfile.cs.
+- Added missing dependency injection registrations in DependencyInjection.cs in data access layer and business access layer projects.
+- Created new api client using rest client to test Product Service endpoints.
+- Tested all Product Service endpoints to ensure correct functionality and data integrity.
+- search/searchText end point implementation is not working yet due to db collation issues.

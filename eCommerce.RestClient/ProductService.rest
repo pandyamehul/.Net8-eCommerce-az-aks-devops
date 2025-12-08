@@ -1,0 +1,41 @@
+GET https://localhost:7249/api/products
+Content-Type: application/json
+
+###
+
+GET https://localhost:7249/api/products/search/product-id/11f2e86a-9d5d-42f9-b3c2-3e4d652e3df8
+Content-Type: application/json
+
+###
+
+GET https://localhost:7249/api/products/search/Apple
+Content-Type: application/json 
+
+###
+POST https://localhost:7249/api/products
+Content-Type: application/json
+
+{
+  "productName": "Executive Office Desk 2",
+  "category": "Furniture",
+  "unitPrice": 399.99,
+  "quantityInStock": 20
+}
+###
+
+PUT https://localhost:7249/api/products
+Content-Type: application/json
+
+{
+  "productID": "88cb4583-e3ef-48e3-a113-1c6353fe677f",
+  "productName": "Executive Office Desk 2",
+  "category": "Furniture",
+  "unitPrice": 359.99,
+  "quantityInStock": 21
+}
+###
+
+DELETE https://localhost:7249/api/products/88cb4583-e3ef-48e3-a113-1c6353fe677f
+Content-Type: application/json
+
+###
