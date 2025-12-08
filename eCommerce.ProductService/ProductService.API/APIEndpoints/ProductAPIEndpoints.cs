@@ -11,7 +11,7 @@ public static class ProductAPIEndpoints
     {
         //GET /api/products
         app.MapGet(
-            "/api/products", 
+            "/api/products",
             async (IProductsService productsService) =>
             {
                 List<ProductResponse?> products = await productsService.GetProducts();
@@ -21,7 +21,7 @@ public static class ProductAPIEndpoints
 
         //GET /api/products/search/product-id/00000000-0000-0000-0000-000000000000
         app.MapGet(
-            "/api/products/search/product-id/{ProductID:guid}", 
+            "/api/products/search/product-id/{ProductID:guid}",
             async (IProductsService productsService, Guid ProductID) =>
             {
                 ProductResponse? product = await productsService.GetProductByCondition(temp => temp.ProductID == ProductID);
@@ -31,12 +31,12 @@ public static class ProductAPIEndpoints
 
         //GET /api/products/search/xxxxxxxxxxxxxxxxxx
         app.MapGet(
-            "/api/products/search/{SearchString}", 
+            "/api/products/search/{SearchString}",
             async (IProductsService productsService, string SearchString) =>
             {
-                List<ProductResponse?> productsByProductName = await productsService.GetProductsByCondition(temp => temp.ProductName != null && temp.ProductName.Contains(SearchString, StringComparison.OrdinalIgnoreCase));
+                List<ProductResponse?> productsByProductName = await productsService.GetProductsByCondition(temp => temp.ProductName != null && temp.ProductName.Contains(SearchString));
 
-                List<ProductResponse?> productsByCategory = await productsService.GetProductsByCondition(temp => temp.Category != null && temp.Category.Contains(SearchString, StringComparison.OrdinalIgnoreCase));
+                List<ProductResponse?> productsByCategory = await productsService.GetProductsByCondition(temp => temp.Category != null && temp.Category.Contains(SearchString));
 
                 var products = productsByProductName.Union(productsByCategory);
 
@@ -46,10 +46,10 @@ public static class ProductAPIEndpoints
 
         //POST /api/products
         app.MapPost(
-            "/api/products", 
+            "/api/products",
             async (
-                IProductsService productsService, 
-                IValidator<ProductAddRequest> productAddRequestValidator, 
+                IProductsService productsService,
+                IValidator<ProductAddRequest> productAddRequestValidator,
                 ProductAddRequest productAddRequest
             ) =>
             {
@@ -76,10 +76,10 @@ public static class ProductAPIEndpoints
 
         //PUT /api/products
         app.MapPut(
-            "/api/products", 
+            "/api/products",
             async (
-                    IProductsService productsService, 
-                    IValidator<ProductUpdateRequest> productUpdateRequestValidator, 
+                    IProductsService productsService,
+                    IValidator<ProductUpdateRequest> productUpdateRequestValidator,
                     ProductUpdateRequest productUpdateRequest
             ) =>
             {
