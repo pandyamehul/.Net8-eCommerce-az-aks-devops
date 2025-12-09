@@ -18,6 +18,7 @@
     - [Data Access Layer Implementation](#data-access-layer-implementation)
     - [Business Access Layer Implementation](#business-access-layer-implementation)
     - [API Endpoints Implementation](#api-endpoints-implementation)
+    - [Build Docker Images in local Docker Registry](#build-docker-images-in-local-docker-registry)
 
 ## Background
 
@@ -152,3 +153,18 @@
 - Created new api client using rest client to test Product Service endpoints.
 - Tested all Product Service endpoints to ensure correct functionality and data integrity.
 - search/searchText end point implementation is not working yet due to db collation issues.
+
+### Build Docker Images in local Docker Registry
+
+- Created local docker image for User Microservice and Product Microservice.
+- Verified docker images are created successfully and available in local docker registry.
+
+used below command to build docker images
+
+  ```pwsh
+  docker build -t net9-ecomm-userapi:initial -f .\UserService.API\Dockerfile .
+  ```
+
+  ```pwsh
+  docker build -t net9-ecomm-productapi:initial -f .\ProductService.API\Dockerfile .
+  ```
