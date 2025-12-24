@@ -168,3 +168,126 @@ used below command to build docker images
   ```pwsh
   docker build -t net9-ecomm-productapi:initial -f .\ProductService.API\Dockerfile .
   ```
+
+- Push docker images to Git Hub Container Registry (GHCR) for versioning and sharing. Followed below steps:
+
+  - Created a personal access token (PAT) in GitHub with appropriate scopes for package read and write.
+  - Logged in to GitHub Container Registry using Docker CLI with the PAT.
+
+    ```pwsh
+    $env:GHCR_TOKEN = "ghp_YOUR_GITHUB_PAT"
+    $env:GHCR_TOKEN | docker login ghcr.io -u <GITHUB_USERNAME> --password-stdin
+    ```
+
+- Tagged the local Docker images with the GHCR repository name.
+
+    ```pwsh
+    docker build -t net9-ecomm-productapi:1.0 -f .\ProductService.API\Dockerfile .
+    docker tag  net9-ecomm-productapi:1.0 ghcr.io/GITHUB_USERNAME/net9-ecomm-productapi:1.0
+    ```
+
+- Pushed the tagged images to GHCR.
+
+    ```pwsh
+    docker push ghcr.io/GITHUB_USERNAME/net9-ecomm-productapi:1.0
+    ```
+
+- Verified the images are successfully pushed to GHCR by checking the Packages section in the GitHub repository.
+- Logged out from GHCR in Docker CLI for security.
+
+    ```pwsh
+    docker logout ghcr.io
+    ```
+
+- Documented the steps and commands used for building and pushing Docker images to GHCR for future reference.
+- Linked GHCR image with Git Hub repository for easy access and management. Followed below steps:
+
+  - Navigated to the GitHub repository where the Docker images are stored.
+  - Clicked on the "Settings" tab in the repository.
+  - Selected "Packages" from the left sidebar.
+  - Located the specific Docker image package (e.g., net9-ecomm-productapi).
+  - Clicked on the package to view its details.
+  - In the package details, clicked on "Link to repository" button.
+  - Selected the appropriate repository from the dropdown menu to link with the Docker image.
+  - Confirmed the linking action.
+  - Verified that the Docker image is now linked to the GitHub repository by checking the package details page.
+
+- Installed Oracle VirtualBox with Linux 24.04 VM to setup local docker setup for testing application.
+
+  - Installed Docker in Linux VM, pulled images from GHCR and ran containers to test application locally.
+  - Following commands used to setup docker in Linux VM:
+  
+    ```pwsh
+    # update Linux
+    sudo apt update && sudo apt upgrade -y
+
+    # install docker
+    sudo apt install docker.io -y
+
+    # check the status of docker service
+    sudo systemctl status docker
+
+    # start and enable docker service
+    sudo systemctl start docker
+    sudo systemctl enable docker
+
+    # verify docker installation
+    docker --version
+
+    # set GHCR token as environment variable
+    export GHCR_TOKEN="ghp_YOUR_GITHUB_PAT"
+
+    # login to GHCR 
+    echo $GHCR_TOKEN | docker login ghcr.io -u <GITHUB_USERNAME> --password-stdin
+
+    # pull docker images from GHCR
+    docker pull ghcr.io/GITHUB_USERNAME/net9-ecomm-userapi:1.0
+    docker pull ghcr.io/GITHUB_USERNAME/net9-ecomm-productapi:1.0
+
+    # run docker containers
+    docker run -p 5000:80 ghcr.io/GITHUB_USERNAME/net9-ecomm-userapi:1.0
+    docker run -p 8080:8080 ghcr.io/GITHUB_USERNAME/net9-ecomm-productapi:1.0
+
+    # verify containers are running
+    docker ps
+    ```
+
+- Created docker network in Linuc VM docket to allow communication between Product microservice and MySQL container.
+
+  ```pwsh
+  sudo docker network create ecomm_app
+  sudo docker network ls # to verify network creation
+  sudo docker network inspect ecomm_app # to view network details
+  ```
+
+- Created and started MySQL container in ecomm-network.
+
+  ```pwsh
+  ## get latest mysql image
+  # sudo docker run --name mysql-container --network ecomm_app -e MYSQL_ROOT_PASSWORD=YourPassword -e MYSQL_DATABASE=ProductDB -p 3306:3306 -d mysql:latest
+  
+  ## run mysql container with hostname for product service to connect to mysql container using hostname instead of ip address 
+  # sudo docker run -it -e MYSQL_ROOT_PASSWORD=admin -p 3306:3306 --network ecomm_app --hostname=mysql-host-product-service mysql:latest
+
+  ## Provide necessary rights to mysql-init folder to allow mysql container to read sql files
+  sudo chmod -R 755 ./mysql-init
+
+  ## use below command to run sql file to create tables and insert data
+  sudo docker run -it -e MYSQL_ROOT_PASSWORD=admin -p 3306:3306 --network ecomm_app --hostname=mysql-host-product-service -v ./mysql-init:/docker-entrypoint-initdb.d mysql:latest
+
+  ## run product service container in same network to connect to mysql container using hostname
+  sudo docker run -p 8080:8080 --network ecomm_app -e MYSQL_HOST=mysql-host-product-service -e MYSQL_USER=root -e MYSQL_PASSWORD=admin ghcr.io/GITHUB_USERNAME/net9-ecomm-productapi:1.0
+  ```
+  
+- Created docker-compose-linux.yaml file to setup MySQL container and Product microservice container together in ecomm_app network. Used below command to start containers using docker-compose-linux.yaml file
+
+  ```pwsh
+  sudo apt install docker-compose -y
+
+  sudo apt docker-compose version
+  sudo apt docker --version
+
+  sudo docker-compose -f docker-compose-linux.yaml config # to verify docker compose file syntax
+  
+  sudo docker-compose -f docker-compose-linux.yaml up -d # to start containers in detached mode
+  ```

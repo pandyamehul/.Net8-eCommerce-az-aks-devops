@@ -1,19 +1,4 @@
 services:
-  ecommerce.aks.userdb:
-    image: postgres
-    container_name: ecommerce.aks.userdb
-    restart: always
-    ports:
-      - "5433:5432"
-    volumes:
-      - ecommerce.aks.userdb:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=eCommerceUsers
-    networks:
-      - ecommerce.aks.network
-
   ecommerce.aks.productdb:
     image: mysql:latest
     container_name: ecommerce.aks.productdb
@@ -32,8 +17,23 @@ services:
       - ecommerce.aks.network
     hostname: ecommerce.aks.mysqldb.products
 
+  ecommerce.aks.product.service:
+    image: ghcr.io/pandyamehul/net9-ecomm-productapi:1.0
+    container_name: ecommerce.aks.product.service
+    restart: unless-stopped
+    environment:
+      MYSQL_HOST: ecommerce.aks.mysqldb.products
+      MYSQL_USER: mysqluser
+      MYSQL_PASSWORD: mysqlpassword
+      MYSQL_DATABASE: eCommerceProducts
+    ports:
+      - 8080:8080
+    depends_on:
+      - ecommerce.aks.productdb
+    networks:
+      - ecommerce.aks.network
+
 volumes:
-  ecommerce.aks.userdb:
   ecommerce.aks.productdb:
 
 networks:
