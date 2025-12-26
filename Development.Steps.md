@@ -20,6 +20,7 @@
     - [API Endpoints Implementation](#api-endpoints-implementation)
     - [Build Docker Images in local Docker Registry](#build-docker-images-in-local-docker-registry)
     - [Steps to delete and recreate databases in docker environment on Linux VM](#steps-to-delete-and-recreate-databases-in-docker-environment-on-linux-vm)
+  - [Step # 3: Implementation of Order Microservice](#step--3-implementation-of-order-microservice)
 
 ## Background
 
@@ -106,7 +107,7 @@
 
 - Added Swagger services in Program.cs to generate API documentation.
 - Configured Swagger middleware in the request pipeline to serve swagger.json and Swagger UI.
-- Added CORS services and configured a default policy to allow requests from the Angular frontend running on http://localhost:5013.
+- Added CORS services and configured a default policy to allow requests from the [Angular frontend](http://localhost:5013).
 - Tested Swagger UI to ensure API endpoints are documented and accessible.
 - Verified CORS policy allows requests from the specified origin without issues.
 - Tested API endpoints from the Angular frontend to ensure proper communication with the User microservice.
@@ -135,7 +136,7 @@
 - Created Product repository using Entity Framework Core for data access.
 - Added Dependency Injection for DbContext and Product repository in the DI container.
 - Created Product service interface and implementation for data access layer.
-- Implemented Repository pattern for data access layer to abstract database operations, ref - ProductsRepository.cs and IProductsRepository.cs. 
+- Implemented Repository pattern for data access layer to abstract database operations, ref - ProductsRepository.cs and IProductsRepository.cs.
 - Tested data access layer methods to ensure correct CRUD operations on Product entity.
 
 ### Business Access Layer Implementation
@@ -185,23 +186,23 @@ used below command to build docker images
 
 - Tagged the local Docker images with the GHCR repository name.
 
-    ```pwsh
-    docker build -t net9-ecomm-productapi:1.0 -f .\ProductService.API\Dockerfile .
-    docker tag  net9-ecomm-productapi:1.0 ghcr.io/GITHUB_USERNAME/net9-ecomm-productapi:1.0
-    ```
+  ```pwsh
+  docker build -t net9-ecomm-productapi:1.0 -f .\ProductService.API\Dockerfile .
+  docker tag  net9-ecomm-productapi:1.0 ghcr.io/GITHUB_USERNAME/net9-ecomm-productapi:1.0
+  ```
 
 - Pushed the tagged images to GHCR.
 
-    ```pwsh
-    docker push ghcr.io/GITHUB_USERNAME/net9-ecomm-productapi:1.0
-    ```
+  ```pwsh
+  docker push ghcr.io/GITHUB_USERNAME/net9-ecomm-productapi:1.0
+  ```
 
 - Verified the images are successfully pushed to GHCR by checking the Packages section in the GitHub repository.
 - Logged out from GHCR in Docker CLI for security.
 
-    ```pwsh
-    docker logout ghcr.io
-    ```
+  ```pwsh
+  docker logout ghcr.io
+  ```
 
 - Documented the steps and commands used for building and pushing Docker images to GHCR for future reference.
 - Linked GHCR image with Git Hub repository for easy access and management. Followed below steps:
@@ -414,7 +415,18 @@ SHOW TABLES;
 DESCRIBE Products;
 -- View table data
 SELECT * FROM Products;
-
 -- Exit MySQL shell
 EXIT;
 ```
+
+## Step # 3: Implementation of Order Microservice
+
+- Created new ASP.net web API project for Order Microservice.
+- Added Class Library projects (data access layer and business access layer) - core and Infra project for Order Microservice.
+- Added necessary Nuget packages - Mapster, FluentValidation, Dependency Injection extensions etc.
+- Implemented Order entity and DbContext for MongoDB database.
+- Created Order repository using MongoDB.Driver for data access.
+- Added Dependency Injection for DbContext and Order repository in the DI container.
+- Created Order service interface and implementation for data access layer.
+- Implemented Repository pattern for data access layer to abstract database operations, ref - OrdersRepository.cs and IOrdersRepository.cs.
+- Added required configuration settings for MongoDB connection in appsettings.json file along with other environment variables for mongo connection in docker-compose file and launchsettings.json file.
