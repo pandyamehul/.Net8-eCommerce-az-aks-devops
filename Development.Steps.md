@@ -19,6 +19,7 @@
     - [Business Access Layer Implementation](#business-access-layer-implementation)
     - [API Endpoints Implementation](#api-endpoints-implementation)
     - [Build Docker Images in local Docker Registry](#build-docker-images-in-local-docker-registry)
+    - [Steps to delete and recreate databases in docker environment on Linux VM](#steps-to-delete-and-recreate-databases-in-docker-environment-on-linux-vm)
 
 ## Background
 
@@ -50,6 +51,9 @@
 - CORS Policy Configuration
 - Angular 17 (Frontend application)
 - MySQL (Relational Database) in docker container
+- Docker (Containerization)
+- Docker Compose (Multi-container orchestration)
+- Deployment to Dockerized environment on Linux VM box
 
 ## Step# 1 : Implementation of User Microservice
 
@@ -291,3 +295,126 @@ used below command to build docker images
   
   sudo docker-compose -f docker-compose-linux.yaml up -d # to start containers in detached mode
   ```
+
+- Updated User Microservice Dockerfile to expose ports 9090 and 9091 instead of 8080 and 8081 and parameterized Postgres connection settings using ENV variables. Build docket image again using updated Dockerfile.
+
+  ```pwsh
+  docker build -t net9-ecomm-userapi:initial -f .\eCommerce.API\Dockerfile .
+  $env:GHCR_TOKEN = "ghp_YOUR_GITHUB_PAT"
+  $env:GHCR_TOKEN | docker login ghcr.io -u <GITHUB_USERNAME> --password-stdin
+  docker tag  net9-ecomm-userapi:initial ghcr.io/GITHUB_USERNAME/net9-ecomm-userapi:1.0
+  docker push ghcr.io/GITHUB_USERNAME/net9-ecomm-userapi:1.0
+  ```
+
+- used below command to start and stop ecommerce application services
+
+  ```bash
+  sudo docker-compose -f docker-compose-product-service-linux.yaml up
+
+  sudo docker-compose -f docker-compose-product-service-linux.yaml down
+  ```
+
+### Steps to delete and recreate databases in docker environment on Linux VM
+
+  ```bash
+  # 1. Stop all containers
+  docker-compose -f docker-compose-product-service-linux.yaml down
+
+  # 2. Remove volumes (this deletes all database data)
+  docker-compose -f docker-compose-product-service-linux.yaml down -v
+
+  # 3. Verify volumes are removed
+  docker volume ls | grep ecommerce
+
+  # 4. Optional: Fix file permissions for init scripts
+  sudo chmod 644 ./postgres-init/*.sql
+  sudo chmod 644 ./mysql-init/*.sql
+
+  # 5. Start containers fresh (databases will be recreated from init scripts)
+  docker-compose -f docker-compose-product-service-linux.yaml up -d
+
+  # 6. Watch logs to ensure successful initialization
+  docker-compose -f docker-compose-product-service-linux.yaml logs -f
+
+  # 7. Verify databases are created
+  docker exec -it ecommerce.aks.userdb psql -U postgres -c "\l"
+  docker exec -it ecommerce.aks.productdb mysql -u root -pmysql-secret-pw -e "SHOW DATABASES;"
+
+  # 8. Check if tables exist
+  docker exec -it ecommerce.aks.userdb psql -U postgres -d eCommerceUsers -c "\dt"
+  docker exec -it ecommerce.aks.productdb mysql -u mysqluser -pmysqlpassword eCommerceProducts -e "SHOW TABLES;"
+  ```
+
+- Steps to connect to Postgres and MySQL containers and run some useful commands
+
+```bash
+# For PostgreSQL - use the userdb container
+sudo docker exec -it ecommerce.aks.userdb psql -U postgres -d eCommerceUsers
+
+-- List all databases
+\l
+-- or
+\list
+
+-- Connect to a specific database
+\c eCommerceUsers
+
+-- List all tables in current database
+\dt
+
+-- Describe a specific table structure
+\d Users
+-- or
+\d+ Users  -- (more detailed)
+
+-- List all schemas
+\dn
+
+-- List all tables in all schemas
+\dt *.*
+
+-- Show table columns with details
+\d+ tablename
+
+-- List all users/roles
+\du
+
+-- Show current database
+SELECT current_database();
+
+-- Show current user
+SELECT current_user;
+
+-- View table data
+SELECT * FROM Users;
+
+-- Show table size
+\dt+
+
+-- Exit psql
+\q
+
+-- Use double quotes for case-sensitive names
+DROP DATABASE "eCommerceUsers";
+
+-- Or force drop if there are active connections
+DROP DATABASE "eCommerceUsers" WITH (FORCE);
+```
+
+```bash
+# For MySQL - use the productdb container\
+sudo docker exec -it ecommerce.aks.productdb mysql -u root -pmysql-secret-pw
+-- List all databases
+SHOW DATABASES;
+-- Use a specific database
+USE eCommerceProducts;
+-- Show all tables in the current database
+SHOW TABLES;
+-- Describe a specific table structure
+DESCRIBE Products;
+-- View table data
+SELECT * FROM Products;
+
+-- Exit MySQL shell
+EXIT;
+```
