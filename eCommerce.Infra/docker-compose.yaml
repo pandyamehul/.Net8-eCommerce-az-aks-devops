@@ -32,10 +32,22 @@ services:
       - ecommerce.aks.network
     hostname: ecommerce.aks.mysqldb.products
 
+  ecommerce.aks.orderdb:
+    image: mongo:latest
+    container_name: ecommerce.aks.orderdb
+    restart: unless-stopped
+    ports:
+      - 27018:27017
+    volumes:
+      - ecommerce.aks.orderdb:/var/lib/mongodb
+      - C:/Mehul/Personal.Learning.Code.Repo/MongoData/:/docker-entrypoint-initdb.d
+    networks:
+      - ecommerce.aks.network
+
 volumes:
   ecommerce.aks.userdb:
   ecommerce.aks.productdb:
-
+  ecommerce.aks.orderdb:
 networks:
   ecommerce.aks.network:
     name: ecommerce.aks.network

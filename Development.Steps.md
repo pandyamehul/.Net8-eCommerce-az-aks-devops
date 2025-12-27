@@ -21,6 +21,8 @@
     - [Build Docker Images in local Docker Registry](#build-docker-images-in-local-docker-registry)
     - [Steps to delete and recreate databases in docker environment on Linux VM](#steps-to-delete-and-recreate-databases-in-docker-environment-on-linux-vm)
   - [Step # 3: Implementation of Order Microservice](#step--3-implementation-of-order-microservice)
+    - [Initial Project setup (Product Microservice)](#initial-project-setup-product-microservice-1)
+    - [Mongo Db Setup in Docker Container](#mongo-db-setup-in-docker-container)
 
 ## Background
 
@@ -421,6 +423,14 @@ EXIT;
 
 ## Step # 3: Implementation of Order Microservice
 
+### Initial Project setup (Product Microservice)
+
+- Created new ASP.net web API project for Product Microservice.
+- Added Class Library projects (data access layer and business access layer) - core and Infra project for Product Microservice.
+- Added necessary Nuget packages - Mapster, FluentValidation, Dependency Injection extensions etc.
+
+Followed similar steps as done for Product Microservice.
+
 - Created new ASP.net web API project for Order Microservice.
 - Added Class Library projects (data access layer and business access layer) - core and Infra project for Order Microservice.
 - Added necessary Nuget packages - Mapster, FluentValidation, Dependency Injection extensions etc.
@@ -431,3 +441,36 @@ EXIT;
 - Implemented Repository pattern for data access layer to abstract database operations, ref - OrdersRepository.cs and IOrdersRepository.cs.
 - Added required configuration settings for MongoDB connection in appsettings.json file along with other environment variables for mongo connection in docker-compose file and launchsettings.json file.
 - Added DTOs and IOrdersService interface in Business Access Layer project.
+
+### Mongo Db Setup in Docker Container
+
+Used below commands to setup MongoDB container for Order Microservice
+
+```pwsh
+docker run --rm -p 27018:27017 -v C:/Mehul/Personal.Learning.Code.Repo/MongoData/:/docker-entrypoint-initdb.d  --name ecommerce.aks.orderdb mongo:latest
+```
+
+Used below commands to connect to MongoDB container and verify database and collections.
+
+```pwsh
+# login to mongo container
+docker exec -it ecommerce.aks.orderdb bash
+
+# connect to mongo shell
+mongosh
+
+# show databases
+show dbs
+
+# use eCommerceOrders database
+use eCommerceOrders
+
+# show collections
+show collections
+
+# view documents in Orders collection
+db.orders.find().pretty()
+
+# exit mongo shell
+exit
+```
