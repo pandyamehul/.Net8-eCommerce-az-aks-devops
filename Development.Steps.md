@@ -430,3 +430,4 @@ EXIT;
 - Created Order service interface and implementation for data access layer.
 - Implemented Repository pattern for data access layer to abstract database operations, ref - OrdersRepository.cs and IOrdersRepository.cs.
 - Added required configuration settings for MongoDB connection in appsettings.json file along with other environment variables for mongo connection in docker-compose file and launchsettings.json file.
+- Added DTOs in Business Access Layer project.
