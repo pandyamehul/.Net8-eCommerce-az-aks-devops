@@ -3,7 +3,7 @@ using eCommerce.OrderService.BusinessLogicLayer.DTO;
 using eCommerce.OrderService.DataAccessLayer.Entities;
 using Mapster;
 
-namespace OrderService.BusinessLogicLayer.Mappers;
+namespace eCommerce.OrderService.BusinessLogicLayer.Mappers;
 
 public class OrderItemUpdateRequestToOrderItemMappingProfile
 {
