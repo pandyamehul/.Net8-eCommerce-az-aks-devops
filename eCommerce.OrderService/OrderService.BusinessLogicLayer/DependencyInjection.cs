@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
+using Mapster;
+using System.Reflection;
 
 namespace eCommerce.OrderService.BusinessLogicLayer;
 
@@ -15,6 +17,9 @@ public static class DependencyInjection
 
         services.AddValidatorsFromAssemblyContaining<OrderItemAddRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<OrderItemUpdateRequestValidator>();
+
+        // Configure and Register Mapster - Scan current assembly
+        TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
 
         return services;
     }
