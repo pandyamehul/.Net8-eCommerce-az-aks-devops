@@ -1,9 +1,9 @@
 ﻿using MongoDB.Driver;
-using OrderService.DataAccessLayer.Entities;
-using OrderService.DataAccessLayer.RepositoryContracts;
+using eCommerce.OrderService.DataAccessLayer.Entities;
+using eCommerce.OrderService.DataAccessLayer.RepositoryContracts;
 
 
-namespace OrderService.DataAccessLayer.Repositories;
+namespace eCommerce.OrderService.DataAccessLayer.Repositories;
 public class OrdersRepository : IOrdersRepository
 {
     private readonly IMongoCollection<Order> _orders;

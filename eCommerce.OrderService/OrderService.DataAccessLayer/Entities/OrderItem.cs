@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace OrderService.DataAccessLayer.Entities;
+namespace eCommerce.OrderService.DataAccessLayer.Entities;
 public class OrderItem
 {
     [BsonId]
