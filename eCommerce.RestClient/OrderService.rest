@@ -3,6 +3,22 @@ Accept: application/json
 
 ###
 
+GET http://localhost:5071/api/Orders/search/orderid/b8f3fbfc-5648-40f8-bb51-f158b32f77d9
+Accept: application/json
+###
+
+GET http://localhost:5071/api/Orders/search/productid/3f3e8b3a-4a50-4cd0-8d8e-1e178ae2cfc1
+Accept: application/json
+###
+
+GET http://localhost:5071/api/Orders/search/userid/c32f8b42-60e6-4c02-90a7-9143ab37189f
+Accept: application/json
+###
+
+GET http://localhost:5071/api/Orders/search/orderDate/2024-03-01
+Accept: application/json
+###
+
 POST http://localhost:5071/api/Orders
 Content-Type: application/json
 
@@ -18,5 +34,28 @@ Content-Type: application/json
     }
   ]
 }
+
+###
+
+PUT http://localhost:5071/api/Orders/ed0bface-9633-4d9c-aa76-9bc9bdee8aad
+Content-Type: application/json
+
+{
+  "userId": "123e4567-e89b-12d3-a456-426614174000",
+  "orderid": "ed0bface-9633-4d9c-aa76-9bc9bdee8aad",
+  "orderDate": "2025-12-28T10:00:00Z",
+  "totalAmount": 150.00,
+  "orderItems": [
+    {
+      "productId": "223e4567-e89b-12d3-a456-426614174001",
+      "quantity": 3,
+      "unitPrice": 50.00
+    }
+  ]
+}
+###
+
+DELETE http://localhost:5071/api/Orders/ed0bface-9633-4d9c-aa76-9bc9bdee8aad
+Accept: application/json
 
 ###
