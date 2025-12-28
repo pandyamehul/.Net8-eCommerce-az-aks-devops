@@ -16,7 +16,7 @@ public static class DependencyInjection
           .Replace("$MONGO_HOST", Environment.GetEnvironmentVariable("MONGODB_HOST") ?? "localhost")
           .Replace("$MONGO_PORT", Environment.GetEnvironmentVariable("MONGODB_PORT") ?? "27017");
 
-        Console.WriteLine($"MongoDB Connection String: {connectionString}");
+        // Console.WriteLine($"MongoDB Connection String: {connectionString}");
 
         services.AddSingleton<IMongoClient>(new MongoClient(connectionString));
 

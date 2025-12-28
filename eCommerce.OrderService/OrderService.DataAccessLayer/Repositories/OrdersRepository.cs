@@ -16,7 +16,7 @@ public class OrdersRepository : IOrdersRepository
     {
         _database = mongoDatabase;
         _orders = mongoDatabase.GetCollection<Order>(collectionName);
-        Console.WriteLine($"OrdersRepository initialized with database: {mongoDatabase.DatabaseNamespace.DatabaseName}");
+        // Console.WriteLine($"OrdersRepository initialized with database: {mongoDatabase.DatabaseNamespace.DatabaseName}");
     }
 
 
@@ -62,31 +62,32 @@ public class OrdersRepository : IOrdersRepository
     {
         try
         {
-            Console.WriteLine($"Querying collection: {collectionName}");
+            // Console.WriteLine($"Querying collection: {collectionName}");
 
             // First, try to get raw BsonDocuments to verify data exists
             var rawCollection = _database.GetCollection<BsonDocument>(collectionName);
             var rawCursor = await rawCollection.FindAsync(new BsonDocument());
             var rawDocs = await rawCursor.ToListAsync();
-            Console.WriteLine($"Raw document count: {rawDocs.Count}");
-            if (rawDocs.Count > 0)
-            {
-                Console.WriteLine($"First raw document: {rawDocs[0].ToJson()}");
-            }
+            // Console.WriteLine($"Raw document count: {rawDocs.Count}");
+
+            // if (rawDocs.Count > 0)
+            // {
+            //     Console.WriteLine($"First raw document: {rawDocs[0].ToJson()}");
+            // }
 
             // Now try with typed collection
             var filter = Builders<Order>.Filter.Empty;
-            Console.WriteLine($"Filter: {filter}");
+            // Console.WriteLine($"Filter: {filter}");
 
             var cursor = await _orders.FindAsync(filter);
             var orders = await cursor.ToListAsync();
 
-            Console.WriteLine($"Retrieved {orders.Count} orders from MongoDB");
+            // Console.WriteLine($"Retrieved {orders.Count} orders from MongoDB");
 
-            if (orders.Count > 0)
-            {
-                Console.WriteLine($"First order: {orders[0].OrderID}");
-            }
+            // if (orders.Count > 0)
+            // {
+            //     Console.WriteLine($"First order: {orders[0].OrderID}");
+            // }
 
             return orders;
         }
