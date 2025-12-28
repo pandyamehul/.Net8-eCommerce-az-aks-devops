@@ -1,15 +1,14 @@
-﻿
-using eCommerce.OrderService.BusinessLogicLayer.DTO;
+﻿using eCommerce.OrderService.BusinessLogicLayer.DTO;
 using eCommerce.OrderService.DataAccessLayer.Entities;
 using Mapster;
 
 namespace eCommerce.OrderService.BusinessLogicLayer.Mappers;
 
-public class OrderToOrderResponseMappingProfile
+public class OrderToOrderResponseMappingProfile : IRegister
 {
-    public OrderToOrderResponseMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        TypeAdapterConfig.GlobalSettings.NewConfig<Order, OrderResponse>()
+        config.NewConfig<Order, OrderResponse>()
             .Map(dest => dest.OrderID, src => src.OrderID)
             .Map(dest => dest.UserID, src => src.UserID)
             .Map(dest => dest.OrderDate, src => src.OrderDate)

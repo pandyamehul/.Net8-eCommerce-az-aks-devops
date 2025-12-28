@@ -4,11 +4,11 @@ using Mapster;
 
 namespace eCommerce.OrderService.BusinessLogicLayer.Mappers;
 
-public class OrderAddRequestToOrderMappingProfile
+public class OrderAddRequestToOrderMappingProfile : IRegister
 {
-    public OrderAddRequestToOrderMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        TypeAdapterConfig.GlobalSettings.NewConfig<OrderAddRequest, Order>()
+        config.NewConfig<OrderAddRequest, Order>()
             .Map(dest => dest.UserID, src => src.UserID)
             .Map(dest => dest.OrderDate, src => src.OrderDate)
             .Map(dest => dest.OrderItems, src => src.OrderItems)

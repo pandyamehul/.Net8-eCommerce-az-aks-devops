@@ -4,11 +4,11 @@ using Mapster;
 
 namespace eCommerce.OrderService.BusinessLogicLayer.Mappers;
 
-public class OrderItemToOrderItemResponseMappingProfile
+public class OrderItemToOrderItemResponseMappingProfile : IRegister
 {
-    public OrderItemToOrderItemResponseMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        TypeAdapterConfig.GlobalSettings.NewConfig<OrderItem, OrderItemResponse>()
+        config.NewConfig<OrderItem, OrderItemResponse>()
             .Map(dest => dest.ProductID, src => src.ProductID)
             .Map(dest => dest.Quantity, src => src.Quantity)
             .Map(dest => dest.UnitPrice, src => src.UnitPrice)

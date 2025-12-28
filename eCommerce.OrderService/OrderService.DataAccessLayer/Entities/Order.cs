@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 
 namespace eCommerce.OrderService.DataAccessLayer.Entities;
+
 public class Order
 {
     [BsonId]
@@ -13,7 +14,7 @@ public class Order
     [BsonRepresentation(MongoDB.Bson.BsonType.String)]
     public Guid UserID { get; set; }
 
-    [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc, Representation = MongoDB.Bson.BsonType.String)]
     public DateTime OrderDate { get; set; }
 
     [BsonRepresentation(MongoDB.Bson.BsonType.Double)]

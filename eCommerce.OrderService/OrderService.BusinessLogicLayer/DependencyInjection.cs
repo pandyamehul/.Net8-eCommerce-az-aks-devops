@@ -1,8 +1,11 @@
-﻿using eCommerce.OrderService.BusinessLogicLayer.Validators;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using eCommerce.OrderService.BusinessLogicLayer.Mappers;
+using eCommerce.OrderService.BusinessLogicLayer.ServiceContracts;
+using eCommerce.OrderService.BusinessLogicLayer.Services;
 using FluentValidation;
 using Mapster;
+using MapsterMapper;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace eCommerce.OrderService.BusinessLogicLayer;
@@ -11,15 +14,26 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddBusinessLogicLayer(this IServiceCollection services, IConfiguration configuration)
     {
-        //TO DO: Add business logic layer services into the IoC container
-        services.AddValidatorsFromAssemblyContaining<OrderAddRequestValidator>();
-        services.AddValidatorsFromAssemblyContaining<OrderUpdateRequestValidator>();
+        //Add business logic layer services into the IoC container
+        //services.AddScoped<IOrdersService, OrdersService>();
 
-        services.AddValidatorsFromAssemblyContaining<OrderItemAddRequestValidator>();
-        services.AddValidatorsFromAssemblyContaining<OrderItemUpdateRequestValidator>();
+        //services.AddValidatorsFromAssemblyContaining<OrderAddRequestValidator>();
+        //services.AddValidatorsFromAssemblyContaining<OrderUpdateRequestValidator>();
+
+        //services.AddValidatorsFromAssemblyContaining<OrderItemAddRequestValidator>();
+        //services.AddValidatorsFromAssemblyContaining<OrderItemUpdateRequestValidator>();
+
+        services.AddValidatorsFromAssemblyContaining<OrderAddRequestToOrderMappingProfile>();
 
         // Configure and Register Mapster - Scan current assembly
         TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
+
+        // Register Mapster IMapper
+        services.AddSingleton(TypeAdapterConfig.GlobalSettings);
+
+        services.AddScoped<IMapper, Mapper>();
+
+        services.AddScoped<IOrdersService, OrdersService>();
 
         return services;
     }

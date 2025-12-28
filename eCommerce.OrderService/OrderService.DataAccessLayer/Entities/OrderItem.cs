@@ -1,9 +1,9 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 
 namespace eCommerce.OrderService.DataAccessLayer.Entities;
+
 public class OrderItem
 {
-    [BsonId]
     [BsonRepresentation(MongoDB.Bson.BsonType.String)]
     public Guid _id { get; set; }
 

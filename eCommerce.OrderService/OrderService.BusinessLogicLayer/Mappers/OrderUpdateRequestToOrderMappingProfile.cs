@@ -1,15 +1,14 @@
-﻿
-using eCommerce.OrderService.BusinessLogicLayer.DTO;
+﻿using eCommerce.OrderService.BusinessLogicLayer.DTO;
 using eCommerce.OrderService.DataAccessLayer.Entities;
 using Mapster;
 
 namespace eCommerce.OrderService.BusinessLogicLayer.Mappers;
 
-public class OrderUpdateRequestToOrderMappingProfile
+public class OrderUpdateRequestToOrderMappingProfile : IRegister
 {
-    public OrderUpdateRequestToOrderMappingProfile()
+    public void Register(TypeAdapterConfig config)
     {
-        TypeAdapterConfig.GlobalSettings.NewConfig<OrderUpdateRequest, Order>()
+        config.NewConfig<OrderUpdateRequest, Order>()
             .Map(dest => dest.OrderID, src => src.OrderID)
             .Map(dest => dest.UserID, src => src.UserID)
             .Map(dest => dest.OrderDate, src => src.OrderDate)
