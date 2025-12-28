@@ -23,6 +23,7 @@
   - [Step # 3: Implementation of Order Microservice](#step--3-implementation-of-order-microservice)
     - [Initial Project setup (Product Microservice)](#initial-project-setup-product-microservice-1)
     - [Mongo Db Setup in Docker Container](#mongo-db-setup-in-docker-container)
+    - [Bug Fixes in Order Microservice after testing](#bug-fixes-in-order-microservice-after-testing)
 
 ## Background
 
@@ -474,3 +475,23 @@ db.orders.find().pretty()
 # exit mongo shell
 exit
 ```
+
+- Created OrderMappingProfile.cs to configure Mapster mappings for Order entity and DTOs.
+- Implemented OrdersService.cs to handle business logic for Order operations.
+- Registered Business Access Layer services in the DI container.
+- Added FluentValidation validators for OrderCreateRequest and OrderUpdateRequest DTOs.
+- Updated DependencyInjection.cs to register FluentValidation validators for Order requests.
+- Implemented Order Service end point using Minimal API pattern.
+- Created endpoints for CRUD operations on Order entity (GetAllOrders, GetOrderById, AddOrder, UpdateOrder, DeleteOrder).
+- Added request validation using FluentValidation for OrderCreateRequest and OrderUpdateRequest.
+- Created new api client using rest client to test Order Service endpoints.
+- Tested all Order Service endpoints to ensure correct functionality and data integrity.
+- Verified data is correctly stored and retrieved from MongoDB.
+- Completed Step#3 implementation of Order Microservice with all required features.
+
+### Bug Fixes in Order Microservice after testing
+
+- Fixed issue with DateTime serialization in Order entity by adding BsonDateTimeOptions attribute to OrderDate property.
+- Added logging statements in OrdersRepository constructor to verify MongoDB database connection during initialization.
+- Fixed MongoDB connection string in DependencyInjection.cs to correctly read MONGODB_PORT environment variable.
+- Updated launchsettings.json to use correct port (27018) for MongoDB connection during development.
