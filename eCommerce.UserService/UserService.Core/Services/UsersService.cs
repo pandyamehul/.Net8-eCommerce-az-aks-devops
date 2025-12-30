@@ -71,7 +71,7 @@ internal class UsersService : IUsersService
     public async Task<UserDTO> GetUserByUserID(Guid userID)
     {
         ApplicationUser? user = await _usersRepository.GetUserByUserID(userID);
-        return _mapper.Map<UserDTO>(user);
+        return user.Adapt<UserDTO>();
     }
 
 }

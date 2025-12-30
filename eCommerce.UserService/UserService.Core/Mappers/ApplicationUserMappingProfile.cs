@@ -24,7 +24,7 @@ public static class MappingConfig
             .Ignore(dest => dest.Success);
         // .Ignore(dest => dest.Token);
 
-        typeadapterConfig<ApplicationUser, UserDTO>
+        TypeAdapterConfig<ApplicationUser, UserDTO>
             .NewConfig()
             .Map(dest => dest.UserID, src => src.UserID)
             .Map(dest => dest.Email, src => src.Email)

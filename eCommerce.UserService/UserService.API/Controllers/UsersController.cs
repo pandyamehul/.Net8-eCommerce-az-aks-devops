@@ -1,6 +1,5 @@
-using eCommerce.Core.DTO;
-using eCommerce.Core.ServiceContracts;
-using Microsoft.AspNetCore.Http;
+using eCommerce.UserService.Core.DTO;
+using eCommerce.UserService.Core.ServiceContracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eCommerce.UserService.API.Controllers;
