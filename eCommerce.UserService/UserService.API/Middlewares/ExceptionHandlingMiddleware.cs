@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace eCommerce.API.Middlewares;
+namespace eCommerce.UserService.API.Middlewares;
 
 public class ExceptionHandlingMiddleware
 {
@@ -38,7 +38,7 @@ public class ExceptionHandlingMiddleware
             }
 
             //Internal Server Error
-            httpContext.Response.StatusCode = 500; 
+            httpContext.Response.StatusCode = 500;
 
             // Write response in JSON
             await httpContext.Response.WriteAsJsonAsync(new { Message = ex.Message, Type = ex.GetType().ToString() });

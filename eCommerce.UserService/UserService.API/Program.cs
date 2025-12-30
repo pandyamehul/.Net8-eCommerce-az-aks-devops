@@ -1,12 +1,12 @@
 using eCommerce.UserService.Infrastructure;
 using eCommerce.UserService.Core;
-using eCommerce.API.Middlewares;
+using eCommerce.UserService.API.Middlewares;
 using eCommerce.UserService.Core.Validators;
 using eCommerce.UserService.Core.Mappers;
 using System.Text.Json.Serialization;
 using FluentValidation;
 
-namespace eCommerce.UserService.API;
+namespace eCommerce.UserService.UserService.API;
 
 public class Program
 {

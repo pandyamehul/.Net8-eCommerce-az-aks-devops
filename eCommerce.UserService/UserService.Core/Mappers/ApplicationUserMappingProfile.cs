@@ -23,5 +23,12 @@ public static class MappingConfig
             .Map(dest => dest.Gender, src => src.Gender)
             .Ignore(dest => dest.Success);
         // .Ignore(dest => dest.Token);
+
+        typeadapterConfig<ApplicationUser, UserDTO>
+            .NewConfig()
+            .Map(dest => dest.UserID, src => src.UserID)
+            .Map(dest => dest.Email, src => src.Email)
+            .Map(dest => dest.PersonName, src => src.PersonName)
+            .Map(dest => dest.Gender, src => src.Gender);
     }
 }

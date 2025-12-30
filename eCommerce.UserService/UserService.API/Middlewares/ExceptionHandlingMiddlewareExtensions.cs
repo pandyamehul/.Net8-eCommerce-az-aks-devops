@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace eCommerce.API.Middlewares;
+namespace eCommerce.UserService.API.Middlewares;
 
 public static class ExceptionHandlingMiddlewareExtensions
 {

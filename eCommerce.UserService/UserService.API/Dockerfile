@@ -12,17 +12,15 @@ EXPOSE 9091
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["eCommerce.API/eCommerce.API.csproj", "eCommerce.API/"]
-RUN dotnet restore "./eCommerce.API/eCommerce.API.csproj"
+COPY ["UserService.API/UserService.API.csproj", "UserService.API/"]
+RUN dotnet restore "./UserService.API/UserService.API.csproj"
 COPY . .
-WORKDIR "/src/eCommerce.API"
-RUN dotnet build "./eCommerce.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
-
+WORKDIR "/src/UserService.API"
+RUN dotnet build "./UserService.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./eCommerce.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
+RUN dotnet publish "./UserService.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
@@ -32,4 +30,4 @@ ENV POSTGRESDB_PORT=5433
 ENV POSTGRESDB_NAME=eCommerceUsers
 ENV POSTGRESDB_USER=postgres
 ENV POSTGRESDB_PASSWORD=postgres
-ENTRYPOINT ["dotnet", "eCommerce.API.dll"]
+ENTRYPOINT ["dotnet", "UserService.API.dll"]

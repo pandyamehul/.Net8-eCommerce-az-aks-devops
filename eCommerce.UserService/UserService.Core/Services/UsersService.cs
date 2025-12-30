@@ -67,4 +67,11 @@ internal class UsersService : IUsersService
         //);
         return registeredUser.Adapt<AuthenticationResponse>() with { Success = true, Token = "token" };
     }
+
+    public async Task<UserDTO> GetUserByUserID(Guid userID)
+    {
+        ApplicationUser? user = await _usersRepository.GetUserByUserID(userID);
+        return _mapper.Map<UserDTO>(user);
+    }
+
 }
