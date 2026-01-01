@@ -1,6 +1,6 @@
 using eCommerce.OrderService.BusinessLogicLayer;
 using eCommerce.OrderService.DataAccessLayer;
-using eCommerce.OrdersService.API.Middleware;
+using eCommerce.OrderService.API.Middleware;
 using eCommerce.OrderService.BusinessLogicLayer.HttpClients;
 
 //-----------------------------------------//

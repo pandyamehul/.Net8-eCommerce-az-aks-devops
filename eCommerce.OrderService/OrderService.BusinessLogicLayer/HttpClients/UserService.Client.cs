@@ -1,4 +1,4 @@
-using eCommerce.OrdersMicroservice.BusinessLogicLayer.DTO;
+using eCommerce.OrderService.BusinessLogicLayer.DTO;
 using System.Net.Http.Json;
 
 namespace eCommerce.OrderService.BusinessLogicLayer.HttpClients;

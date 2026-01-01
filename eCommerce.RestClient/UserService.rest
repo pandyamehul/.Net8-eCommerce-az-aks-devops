@@ -17,4 +17,9 @@ Content-Type: application/json
   "Email": "newuser@example.com",
   "PasswordHash": "NewUser@123"
 }
-###`
+###
+
+GET http://localhost:9090/api/users/d3c81539-949c-42c2-b3ca-495bddf4c811
+Content-Type: application/json
+
+###

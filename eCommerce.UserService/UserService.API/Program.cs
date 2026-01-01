@@ -64,6 +64,7 @@ public class Program
         // Add Swagger Support
         app.UseSwagger(); //Adds endpoint that can serve the swagger.json
         app.UseSwaggerUI(); //Adds swagger UI (interactive page to explore and test API endpoints)
+        app.UseCors();
 
         //Authentication & Authorization
         app.UseAuthentication();
