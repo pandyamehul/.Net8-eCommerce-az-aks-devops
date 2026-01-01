@@ -1,6 +1,7 @@
 using eCommerce.OrderService.BusinessLogicLayer;
 using eCommerce.OrderService.DataAccessLayer;
 using eCommerce.OrdersService.API.Middleware;
+using eCommerce.OrderService.BusinessLogicLayer.HttpClients;
 
 //-----------------------------------------//
 //------ Configure build pipeline -------- //
@@ -21,7 +22,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Cors
-builder.Services.AddCors(options => {
+builder.Services.AddCors(options =>
+{
     options.AddDefaultPolicy(builder =>
     {
         builder.WithOrigins("http://localhost:4200")
@@ -30,6 +32,13 @@ builder.Services.AddCors(options => {
     });
 });
 
+builder.Services.AddHttpClient<UserServiceClient>(client =>
+{
+    client.BaseAddress = new Uri(
+        $"http://{builder.Configuration["UsersMicroserviceName"]}:" +
+        $"{builder.Configuration["UsersMicroservicePort"]}"
+    );
+});
 
 //-----------------------------------------//
 //------ Configure request pipeline ------ //

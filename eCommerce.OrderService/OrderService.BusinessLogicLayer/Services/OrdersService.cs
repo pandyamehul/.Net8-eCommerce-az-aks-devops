@@ -1,5 +1,6 @@
 ﻿
 using eCommerce.OrderService.BusinessLogicLayer.DTO;
+using eCommerce.OrderService.BusinessLogicLayer.HttpClients;
 using eCommerce.OrderService.BusinessLogicLayer.ServiceContracts;
 using eCommerce.OrderService.DataAccessLayer.Entities;
 using eCommerce.OrderService.DataAccessLayer.RepositoryContracts;
@@ -16,11 +17,13 @@ public class OrdersService : IOrdersService
     private readonly IValidator<OrderItemAddRequest> _orderItemAddRequestValidator;
     private readonly IValidator<OrderUpdateRequest> _orderUpdateRequestValidator;
     private readonly IValidator<OrderItemUpdateRequest> _orderItemUpdateRequestValidator;
+    private UserServiceClient _userServiceClient;
     private readonly IMapper _mapper;
     private IOrdersRepository _ordersRepository;
 
     public OrdersService(
         IOrdersRepository ordersRepository, 
+        UserServiceClient userServiceClient,
         IMapper mapper, 
         IValidator<OrderAddRequest> orderAddRequestValidator, 
         IValidator<OrderItemAddRequest> orderItemAddRequestValidator, 
@@ -34,6 +37,7 @@ public class OrdersService : IOrdersService
         _orderItemUpdateRequestValidator = orderItemUpdateRequestValidator;
         _mapper = mapper;
         _ordersRepository = ordersRepository;
+        _userServiceClient = userServiceClient;
     }
 
 
@@ -67,7 +71,11 @@ public class OrdersService : IOrdersService
         }
 
         //TO DO: Add logic for checking if UserID exists in Users microservice
-
+        UserDTO? user = await _userServiceClient.GetUserByUserID(orderAddRequest.UserID);
+        if (user == null)
+        {
+            throw new ArgumentException("Invalid User ID");
+        }
 
         //Convert data from OrderAddRequest to Order
         //Map OrderAddRequest to 'Order' type (it invokes OrderAddRequestToOrderMappingProfile class)
@@ -127,7 +135,11 @@ public class OrdersService : IOrdersService
         }
 
         //TO DO: Add logic for checking if UserID exists in Users microservice
-
+        UserDTO? user = await _userServiceClient.GetUserByUserID(orderUpdateRequest.UserID);
+        if (user == null)
+        {
+            throw new ArgumentException("Invalid User ID");
+        }
 
         //Convert data from OrderUpdateRequest to Order
         Order orderInput = _mapper.Map<Order>(orderUpdateRequest); //Map OrderUpdateRequest to 'Order' type (it invokes OrderUpdateRequestToOrderMappingProfile class)
