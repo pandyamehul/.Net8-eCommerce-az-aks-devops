@@ -3,7 +3,7 @@ Content-Type: application/json
 
 ###
 
-GET https://localhost:7249/api/products/search/product-id/11f2e86a-9d5d-42f9-b3c2-3e4d652e3df8
+GET https://localhost:7249/api/products/search/product-id/11f2e86a-9d5d-42f9-b3c2-3e4d652e3df89
 Content-Type: application/json
 
 ###

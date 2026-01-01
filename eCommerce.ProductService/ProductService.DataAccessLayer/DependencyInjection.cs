@@ -18,9 +18,11 @@ public static class DependencyInjection
 
         // Replace placeholders with environment variable values
         connectionString = connectionString.Replace("$MYSQL_HOST", Environment.GetEnvironmentVariable("MYSQL_HOST")!);
+        connectionString = connectionString.Replace("$MYSQL_PORT", Environment.GetEnvironmentVariable("MYSQL_PORT")!);
+        connectionString = connectionString.Replace("$MYSQL_DATABASE", Environment.GetEnvironmentVariable("MYSQL_DATABASE")!);
         connectionString = connectionString.Replace("$MYSQL_USER", Environment.GetEnvironmentVariable("MYSQL_USER")!);
         connectionString = connectionString.Replace("$MYSQL_PASSWORD", Environment.GetEnvironmentVariable("MYSQL_PASSWORD")!);
-        connectionString = connectionString.Replace("$MYSQL_DATABASE", Environment.GetEnvironmentVariable("MYSQL_DATABASE")!);
+
 
         // Configure DbContext with MySQL provider
         services.AddDbContext<ApplicationDbContext>(options =>
