@@ -12,6 +12,7 @@
     - [Postgres Integration with Dapper (ORM tool for data access)](#postgres-integration-with-dapper-orm-tool-for-data-access)
     - [FluentValidation Integration for Request Validation](#fluentvalidation-integration-for-request-validation)
     - [Added Swagger Support with CORS Policy](#added-swagger-support-with-cors-policy)
+    - [Important commands used to generate docker image and push to Git Hub Container Registry (GHCR)](#important-commands-used-to-generate-docker-image-and-push-to-git-hub-container-registry-ghcr)
   - [Step# 2: Implementation of Product Microservice](#step-2-implementation-of-product-microservice)
     - [Initial Project setup (Product Microservice)](#initial-project-setup-product-microservice)
     - [MySQL Db Setup in Docker Container](#mysql-db-setup-in-docker-container)
@@ -21,9 +22,10 @@
     - [Build Docker Images in local Docker Registry](#build-docker-images-in-local-docker-registry)
     - [Steps to delete and recreate databases in docker environment on Linux VM](#steps-to-delete-and-recreate-databases-in-docker-environment-on-linux-vm)
   - [Step # 3: Implementation of Order Microservice](#step--3-implementation-of-order-microservice)
-    - [Initial Project setup (Product Microservice)](#initial-project-setup-product-microservice-1)
+    - [Initial Project setup (Order Microservice)](#initial-project-setup-order-microservice)
     - [Mongo Db Setup in Docker Container](#mongo-db-setup-in-docker-container)
     - [Bug Fixes in Order Microservice after testing](#bug-fixes-in-order-microservice-after-testing)
+    - [Order Service itegration with User Service and Product Service](#order-service-itegration-with-user-service-and-product-service)
 
 ## Background
 
@@ -116,6 +118,23 @@
 - Tested API endpoints from the Angular frontend to ensure proper communication with the User microservice.
 - Verified that Swagger UI and CORS configurations work as expected in development environment.
 - Completed Step#1 implementation of User Microservice with all required features.
+
+### Important commands used to generate docker image and push to Git Hub Container Registry (GHCR)
+
+  ```pwsh
+  # Navigate to UserService project folder
+  cd eCommerce.UserService
+  # Build docker image for User Microservice
+  docker build -t net9-ecomm-userapi:2.0 -f .\eCommerce.API\Dockerfile .
+  # Set GHCR token as environment variable
+  $env:GHCR_TOKEN = "ghp_YOUR_GITHUB_PAT"
+  # Login to GHCR
+  $env:GHCR_TOKEN | docker login ghcr.io -u <GITHUB_USERNAME> --password-stdin
+  # Tag the local Docker image with the GHCR repository name
+  docker tag  net9-ecomm-userapi:2.0 ghcr.io/GITHUB_USERNAME/net9-ecomm-userapi:2.0
+  # Push the tagged image to GHCR
+  docker push ghcr.io/GITHUB_USERNAME/net9-ecomm-userapi:2.0
+  ```
 
 ## Step# 2: Implementation of Product Microservice
 
@@ -424,10 +443,10 @@ EXIT;
 
 ## Step # 3: Implementation of Order Microservice
 
-### Initial Project setup (Product Microservice)
+### Initial Project setup (Order Microservice)
 
-- Created new ASP.net web API project for Product Microservice.
-- Added Class Library projects (data access layer and business access layer) - core and Infra project for Product Microservice.
+- Created new ASP.net web API project for Order Microservice.
+- Added Class Library projects (data access layer and business access layer) - core and Infra project for Order Microservice.
 - Added necessary Nuget packages - Mapster, FluentValidation, Dependency Injection extensions etc.
 
 Followed similar steps as done for Product Microservice.
@@ -495,3 +514,9 @@ exit
 - Added logging statements in OrdersRepository constructor to verify MongoDB database connection during initialization.
 - Fixed MongoDB connection string in DependencyInjection.cs to correctly read MONGODB_PORT environment variable.
 - Updated launchsettings.json to use correct port (27018) for MongoDB connection during development.
+
+### Order Service itegration with User Service and Product Service
+
+- Implemented HttpClientFactory in Order Service to call User Service and Product Service APIs.
+- Created UserApiClient and ProductApiClient classes to encapsulate API calls.
+- Added method in OrderService to fetch user details from user service while creating and updating an order.

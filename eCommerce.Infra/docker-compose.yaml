@@ -1,54 +1,56 @@
 services:
-  ecommerce.aks.userdb:
+  ecomm.net9.aks.userdb:
     image: postgres
-    container_name: ecommerce.aks.userdb
+    container_name: ecomm.net9.aks.pg.userdb
+    hostname: ecomm.net9.aks.pg.userdb
     restart: always
     ports:
       - "5433:5432"
     volumes:
-      - ecommerce.aks.userdb:/var/lib/postgresql/data
+      - ecomm.net9.aks.pg.userdb:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=eCommerceUsers
+      - POSTGRES_DB=ecomm.net9Users
     networks:
-      - ecommerce.aks.network
+      - ecomm.net9.aks.network
 
-  ecommerce.aks.productdb:
+  ecomm.net9.aks.productdb:
     image: mysql:latest
-    container_name: ecommerce.aks.productdb
+    container_name: ecomm.net9.aks.productdb
+    hostname: ecomm.net9.aks.mysqldb.products
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: mysql-secret-pw
-      MYSQL_DATABASE: eCommerceProducts
+      MYSQL_DATABASE: ecomm.net9Products
       MYSQL_USER: mysqluser
       MYSQL_PASSWORD: mysqlpassword
     ports:
       - 3306:3306
     volumes:
-      - ecommerce.aks.productdb:/var/lib/mysql
+      - ecomm.net9.aks.productdb:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
     networks:
-      - ecommerce.aks.network
-    hostname: ecommerce.aks.mysqldb.products
+      - ecomm.net9.aks.network
 
-  ecommerce.aks.orderdb:
+  ecomm.net9.aks.orderdb:
     image: mongo:latest
-    container_name: ecommerce.aks.orderdb
+    container_name: ecomm.net9.aks.orderdb
     restart: unless-stopped
     ports:
       - 27018:27017
     volumes:
-      - ecommerce.aks.orderdb:/var/lib/mongodb
+      - ecomm.net9.aks.orderdb:/var/lib/mongodb
       - C:/Mehul/Personal.Learning.Code.Repo/MongoData/:/docker-entrypoint-initdb.d
     networks:
-      - ecommerce.aks.network
+      - ecomm.net9.aks.network
 
 volumes:
-  ecommerce.aks.userdb:
-  ecommerce.aks.productdb:
-  ecommerce.aks.orderdb:
+  ecomm.net9.aks.userdb:
+  ecomm.net9.aks.productdb:
+  ecomm.net9.aks.orderdb:
+
 networks:
-  ecommerce.aks.network:
-    name: ecommerce.aks.network
+  ecomm.net9.aks.network:
+    name: ecomm.net9.aks.network
     driver: bridge
