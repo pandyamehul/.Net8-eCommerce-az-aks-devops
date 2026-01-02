@@ -1,4 +1,4 @@
-POST http://localhost:9090/api/auth/register
+POST {{user-service-endpoint}}/api/auth/register
 Content-Type: application/json
 
 {
@@ -10,7 +10,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:9090/api/auth/login
+POST {{user-service-endpoint}}/api/auth/login
 Content-Type: application/json
 
 {
@@ -19,7 +19,7 @@ Content-Type: application/json
 }
 ###
 
-GET http://localhost:9090/api/users/d3c81539-949c-42c2-b3ca-495bddf4c811
+GET {{user-service-endpoint}}/api/users/07248f51-cab1-49b6-91aa-b8422c980154
 Content-Type: application/json
 
 ###

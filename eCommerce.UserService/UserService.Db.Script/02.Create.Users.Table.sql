@@ -1,3 +1,4 @@
+-- Script to create the Users table
 Create Table Users (
     UserId UUID Primary Key,
     PersonName VARCHAR(50) Not Null,

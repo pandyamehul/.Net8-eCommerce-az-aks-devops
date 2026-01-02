@@ -1,5 +1,5 @@
 services:
-  orderservice.api:
+  net9-ecomm-orderapi:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080

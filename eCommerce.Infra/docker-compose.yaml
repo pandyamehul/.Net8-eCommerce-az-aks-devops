@@ -1,5 +1,5 @@
 services:
-  ecomm.net9.aks.userdb:
+  ecomm.net9.aks.pg.userdb:
     image: postgres
     container_name: ecomm.net9.aks.pg.userdb
     hostname: ecomm.net9.aks.pg.userdb
@@ -7,50 +7,61 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ecomm.net9.aks.pg.userdb:/var/lib/postgresql/data
+      - ecomm.net9.aks.pg.userdb.storage:/var/lib/postgresql/data
+      - ../eCommerce.UserService/UserService.Db.Script:/docker-entrypoint-initdb.d
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=ecomm.net9Users
+      - POSTGRES_DB=eCommerceUsers
     networks:
-      - ecomm.net9.aks.network
+      - ecomm.net9.aks.pg.userdb.network
 
-  ecomm.net9.aks.productdb:
+  ecomm.net9.aks.mysql.productdb:
     image: mysql:latest
-    container_name: ecomm.net9.aks.productdb
-    hostname: ecomm.net9.aks.mysqldb.products
+    container_name: ecomm.net9.aks.mysql.productdb
+    hostname: ecomm.net9.aks.mysql.productdb
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: mysql-secret-pw
-      MYSQL_DATABASE: ecomm.net9Products
+      MYSQL_DATABASE: eCommerceProducts
       MYSQL_USER: mysqluser
       MYSQL_PASSWORD: mysqlpassword
     ports:
       - 3306:3306
     volumes:
-      - ecomm.net9.aks.productdb:/var/lib/mysql
-      - ./mysql-init:/docker-entrypoint-initdb.d
+      - ecomm.net9.aks.mysql.productdb.storage:/var/lib/mysql
+      - ../eCommerce.ProductService/ProductService.Db.Script:/docker-entrypoint-initdb.d
     networks:
-      - ecomm.net9.aks.network
+      - ecomm.net9.aks.mysql.productdb.network
 
-  ecomm.net9.aks.orderdb:
+  ecomm.net9.aks.mongo.orderdb:
     image: mongo:latest
-    container_name: ecomm.net9.aks.orderdb
+    container_name: ecomm.net9.aks.mongo.orderdb
+    hostname: ecomm.net9.aks.mongo.orderdb
     restart: unless-stopped
     ports:
       - 27018:27017
     volumes:
-      - ecomm.net9.aks.orderdb:/var/lib/mongodb
-      - C:/Mehul/Personal.Learning.Code.Repo/MongoData/:/docker-entrypoint-initdb.d
+      - ecomm.net9.aks.mongo.orderdb.storage:/var/lib/mongodb
+      - ../eCommerce.OrderService/OrderService.Db.Script:/docker-entrypoint-initdb.d
     networks:
-      - ecomm.net9.aks.network
+      - ecomm.net9.aks.mongo.orderdb.network
 
 volumes:
-  ecomm.net9.aks.userdb:
-  ecomm.net9.aks.productdb:
-  ecomm.net9.aks.orderdb:
+  ecomm.net9.aks.pg.userdb.storage:
+  ecomm.net9.aks.mysql.productdb.storage:
+  ecomm.net9.aks.mongo.orderdb.storage:
 
 networks:
   ecomm.net9.aks.network:
     name: ecomm.net9.aks.network
+    driver: bridge
+  ecomm.net9.aks.pg.userdb.network:
+    name: ecomm.net9.aks.pg.userdb.network
+    driver: bridge
+  ecomm.net9.aks.mysql.productdb.network:
+    name: ecomm.net9.aks.mysql.productdb.network
+    driver: bridge
+  ecomm.net9.aks.mongo.orderdb.network:
+    name: ecomm.net9.aks.mongo.orderdb.network
     driver: bridge

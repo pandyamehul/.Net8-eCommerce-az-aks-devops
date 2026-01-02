@@ -1,0 +1,17 @@
+{
+    "rest-client.environmentVariables": {
+        "$shared": {
+            "shared-variable": "shared-value"
+        },
+        "local-dev": {
+            "user-service-endpoint": "http://localhost:9090",
+            "product-service-endpoint": "https://localhost:7249",
+            "order-service-endpoint": "http://localhost:5071"
+        },
+        "docker-endpoint": {
+            "user-service-endpoint": "http://localhost:5000",
+            "product-service-endpoint": "http://localhost:6000",
+            "order-service-endpoint": "http://localhost:7000"
+        }
+    }
+}
