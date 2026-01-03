@@ -15,7 +15,7 @@ GET {{order-service-endpoint}}/api/Orders/search/userid/c32f8b42-60e6-4c02-90a7-
 Accept: application/json
 ###
 
-GET {{order-service-endpoint}}/api/Orders/search/orderDate/2024-03-01
+GET {{order-service-endpoint}}/api/Orders/search/orderDate/2022-03-01
 Accept: application/json
 ###
 
@@ -28,7 +28,7 @@ Content-Type: application/json
   "totalAmount": 100.00,
   "orderItems": [
     {
-      "productId": "223e4567-e89b-12d3-a456-426614174001",
+      "productId": "3f3e8b3a-4a50-4cd0-8d8e-1e178ae2cfc1",
       "quantity": 2,
       "unitPrice": 50.00
     }

@@ -62,7 +62,7 @@ public class OrdersController : ControllerBase
 
 
     //GET: /api/Orders/search/orderDate/{orderDate}
-    [HttpGet("/search/orderDate/{orderDate}")]
+    [HttpGet("search/orderDate/{orderDate}")]
     public async Task<IEnumerable<OrderResponse?>> GetOrdersByOrderDate(DateTime orderDate)
     {
         FilterDefinition<Order> filter = Builders<Order>.Filter.Eq(temp => temp.OrderDate.ToString("yyyy-MM-dd"), orderDate.ToString("yyyy-MM-dd")

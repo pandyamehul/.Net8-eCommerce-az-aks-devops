@@ -7,37 +7,49 @@ using eCommerce.OrderService.DataAccessLayer.RepositoryContracts;
 using FluentValidation;
 using FluentValidation.Results;
 using MapsterMapper;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
 namespace eCommerce.OrderService.BusinessLogicLayer.Services;
 
 public class OrdersService : IOrdersService
 {
+    // Validators
     private readonly IValidator<OrderAddRequest> _orderAddRequestValidator;
     private readonly IValidator<OrderItemAddRequest> _orderItemAddRequestValidator;
     private readonly IValidator<OrderUpdateRequest> _orderUpdateRequestValidator;
     private readonly IValidator<OrderItemUpdateRequest> _orderItemUpdateRequestValidator;
-    private UserServiceClient _userServiceClient;
+    // Mapper and Repository
     private readonly IMapper _mapper;
     private IOrdersRepository _ordersRepository;
+    // Microservice Http Clients
+    private UserServiceClient _userServiceClient;
+    private ProductServiceClient _productServiceClient;
+    private readonly ILogger<OrdersService> _logger;
 
     public OrdersService(
-        IOrdersRepository ordersRepository, 
+        IMapper mapper,
+        IOrdersRepository ordersRepository,
+        IValidator<OrderAddRequest> orderAddRequestValidator,
+        IValidator<OrderItemAddRequest> orderItemAddRequestValidator,
+        IValidator<OrderUpdateRequest> orderUpdateRequestValidator,
+        IValidator<OrderItemUpdateRequest> orderItemUpdateRequestValidator,
         UserServiceClient userServiceClient,
-        IMapper mapper, 
-        IValidator<OrderAddRequest> orderAddRequestValidator, 
-        IValidator<OrderItemAddRequest> orderItemAddRequestValidator, 
-        IValidator<OrderUpdateRequest> orderUpdateRequestValidator, 
-        IValidator<OrderItemUpdateRequest> orderItemUpdateRequestValidator
+        ProductServiceClient productServiceClient,
+        ILogger<OrdersService> logger
     )
     {
+        _mapper = mapper;
+        _ordersRepository = ordersRepository;
+
         _orderAddRequestValidator = orderAddRequestValidator;
         _orderItemAddRequestValidator = orderItemAddRequestValidator;
         _orderUpdateRequestValidator = orderUpdateRequestValidator;
         _orderItemUpdateRequestValidator = orderItemUpdateRequestValidator;
-        _mapper = mapper;
-        _ordersRepository = ordersRepository;
+
         _userServiceClient = userServiceClient;
+        _productServiceClient = productServiceClient;
+        _logger = logger;
     }
 
 
@@ -68,6 +80,13 @@ public class OrdersService : IOrdersService
                 string errors = string.Join(", ", orderItemAddRequestValidationResult.Errors.Select(temp => temp.ErrorMessage));
                 throw new ArgumentException(errors);
             }
+
+            //TO DO: Add logic for checking if ProductID exists in Products microservice
+            ProductDTO? product = await _productServiceClient.GetProductByProductID(orderItemAddRequest.ProductID);
+            if (product == null)
+            {
+                throw new ArgumentException("Invalid Product ID");
+            }
         }
 
         //TO DO: Add logic for checking if UserID exists in Users microservice
@@ -79,7 +98,7 @@ public class OrdersService : IOrdersService
 
         //Convert data from OrderAddRequest to Order
         //Map OrderAddRequest to 'Order' type (it invokes OrderAddRequestToOrderMappingProfile class)
-        Order orderInput = _mapper.Map<Order>(orderAddRequest); 
+        Order orderInput = _mapper.Map<Order>(orderAddRequest);
 
         //Generate values
         foreach (OrderItem orderItem in orderInput.OrderItems)
@@ -98,7 +117,7 @@ public class OrdersService : IOrdersService
         }
 
         //Map addedOrder ('Order' type) into 'OrderResponse' type (it invokes OrderToOrderResponseMappingProfile).
-        OrderResponse addedOrderResponse = _mapper.Map<OrderResponse>(addedOrder); 
+        OrderResponse addedOrderResponse = _mapper.Map<OrderResponse>(addedOrder);
 
         return addedOrderResponse;
     }
@@ -131,6 +150,13 @@ public class OrdersService : IOrdersService
             {
                 string errors = string.Join(", ", orderItemUpdateRequestValidationResult.Errors.Select(temp => temp.ErrorMessage));
                 throw new ArgumentException(errors);
+            }
+
+            //TO DO: Add logic for checking if ProductID exists in Products microservice
+            ProductDTO? product = await _productServiceClient.GetProductByProductID(orderItemUpdateRequest.ProductID);
+            if (product == null)
+            {
+                throw new ArgumentException("Invalid Product ID");
             }
         }
 
@@ -188,26 +214,86 @@ public class OrdersService : IOrdersService
             return null;
 
         OrderResponse orderResponse = _mapper.Map<OrderResponse>(order);
+
+        //TO DO: Load ProductName and Category in each OrderItem
+        if (orderResponse != null)
+        {
+
+            foreach (OrderItemResponse orderItemResponse in orderResponse.OrderItems)
+            {
+                ProductDTO? productDTO = await _productServiceClient.GetProductByProductID(orderItemResponse.ProductID);
+
+                if (productDTO == null)
+                    continue;
+
+                _mapper.Map<ProductDTO, OrderItemResponse>(productDTO, orderItemResponse);
+            }
+        }
+
         return orderResponse;
     }
 
 
     public async Task<List<OrderResponse?>> GetOrdersByCondition(FilterDefinition<Order> filter)
     {
+        // Invoke repository to get orders data based on filter
         IEnumerable<Order?> orders = await _ordersRepository.GetOrdersByCondition(filter);
-
-
+        // Map 'Order' type to 'OrderResponse' type (using Mapster) and return as List<OrderResponse> type data to caller
         IEnumerable<OrderResponse?> orderResponses = _mapper.Map<IEnumerable<OrderResponse>>(orders);
+
+        //TO DO: Load ProductName and Category in each OrderItem
+        var orderResponsesList = new List<OrderResponse>();
+        foreach (OrderResponse? orderResponse in orderResponses)
+        {
+            if (orderResponse == null)
+                continue;
+
+            foreach (OrderItemResponse orderItemResponse in orderResponse.OrderItems)
+            {
+                ProductDTO? productDTO = await _productServiceClient.GetProductByProductID(orderItemResponse.ProductID);
+
+                if (productDTO == null)
+                    continue;
+
+                _mapper.Map<ProductDTO, OrderItemResponse>(productDTO, orderItemResponse);
+            }
+            orderResponsesList.Add(orderResponse);
+        }
+        orderResponses = orderResponsesList;
+
+        // Convert IEnumerable to List and return
         return orderResponses.ToList();
     }
 
 
     public async Task<List<OrderResponse?>> GetOrders()
     {
+        // Invoke repository to get all orders data
         IEnumerable<Order?> orders = await _ordersRepository.GetOrders();
-
-
+        // Map 'Order' type to 'OrderResponse' type (using Mapster) and return as List<OrderResponse> type data to caller
         IEnumerable<OrderResponse?> orderResponses = _mapper.Map<IEnumerable<OrderResponse>>(orders);
+
+        //TO DO: Load ProductName and Category in each OrderItem
+        var orderResponsesList = new List<OrderResponse>();
+        foreach (OrderResponse? orderResponse in orderResponses)
+        {
+            if (orderResponse == null)
+                continue;
+
+            foreach (OrderItemResponse orderItemResponse in orderResponse.OrderItems)
+            {
+                ProductDTO? productDTO = await _productServiceClient.GetProductByProductID(orderItemResponse.ProductID);
+
+                if (productDTO == null)
+                    continue;
+
+                _mapper.Map<ProductDTO, OrderItemResponse>(productDTO, orderItemResponse);
+            }
+            orderResponsesList.Add(orderResponse);
+        }
+        orderResponses = orderResponsesList;
+
+        // Convert IEnumerable to List and return
         return orderResponses.ToList();
     }
 }

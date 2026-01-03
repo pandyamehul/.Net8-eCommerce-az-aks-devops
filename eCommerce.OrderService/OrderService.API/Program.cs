@@ -35,8 +35,16 @@ builder.Services.AddCors(options =>
 builder.Services.AddHttpClient<UserServiceClient>(client =>
 {
     client.BaseAddress = new Uri(
-        $"http://{builder.Configuration["UsersMicroserviceName"]}:" +
-        $"{builder.Configuration["UsersMicroservicePort"]}"
+        $"http://{builder.Configuration["UserServiceName"]}:" +
+        $"{builder.Configuration["UserServicePort"]}"
+    );
+});
+
+builder.Services.AddHttpClient<ProductServiceClient>(client =>
+{
+    client.BaseAddress = new Uri(
+        $"http://{builder.Configuration["ProductServiceName"]}:" +
+        $"{builder.Configuration["ProductServicePort"]}"
     );
 });
 

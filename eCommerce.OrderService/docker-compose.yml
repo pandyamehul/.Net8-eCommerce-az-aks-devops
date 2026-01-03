@@ -92,8 +92,10 @@ services:
       - MONGODB_HOST=ecomm.net9.aks.mongo.orderdb
       - MONGODB_PORT=27017
       - MONGODB_DATABASE=OrdersDatabase
-      - UsersMicroserviceName=net9-ecomm-userapi
-      - UsersMicroservicePort=9090
+      - UserServiceName=net9-ecomm-userapi
+      - UserServicePort=9090
+      - ProductServiceName=net9-ecomm-productapi
+      - ProductServicePort=8080
     ports:
       - "7000:8080"
     networks:
