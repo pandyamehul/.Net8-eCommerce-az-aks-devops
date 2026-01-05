@@ -24,6 +24,9 @@ public static class ProductAPIEndpoints
             "/api/products/search/product-id/{ProductID:guid}",
             async (IProductsService productsService, Guid ProductID) =>
             {
+                await Task.Delay(100);
+                throw new NotImplementedException();
+
                 ProductResponse? product = await productsService.GetProductByCondition(temp => temp.ProductID == ProductID);
                 if (product == null)
                 {
@@ -111,14 +114,15 @@ public static class ProductAPIEndpoints
 
         //DELETE /api/products/xxxxxxxxxxxxxxxxxxx
         app.MapDelete(
-            "/api/products/{ProductID:guid}", 
-            async (IProductsService productsService, Guid ProductID) => {
-            bool isDeleted = await productsService.DeleteProduct(ProductID);
-            if (isDeleted)
-                return Results.Ok(true);
-            else
-                return Results.Problem("Error in deleting product");
-        });
+            "/api/products/{ProductID:guid}",
+            async (IProductsService productsService, Guid ProductID) =>
+            {
+                bool isDeleted = await productsService.DeleteProduct(ProductID);
+                if (isDeleted)
+                    return Results.Ok(true);
+                else
+                    return Results.Problem("Error in deleting product");
+            });
         return app;
     }
 }

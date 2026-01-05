@@ -1,45 +1,71 @@
 using eCommerce.OrderService.BusinessLogicLayer.DTO;
+using eCommerce.OrderService.BusinessLogicLayer.Policies;
+using Microsoft.Extensions.Logging;
+using Polly.CircuitBreaker;
 using System.Net.Http.Json;
 
 namespace eCommerce.OrderService.BusinessLogicLayer.HttpClients;
 
 public class UserServiceClient
+
 {
     private readonly HttpClient _httpClient;
+    private readonly ILogger<UserServiceClient> _logger;
 
-    public UserServiceClient(HttpClient httpClient)
+    public UserServiceClient(HttpClient httpClient, ILogger<UserServiceClient> logger)
     {
         _httpClient = httpClient;
+        _logger = logger;
     }
 
 
     public async Task<UserDTO?> GetUserByUserID(Guid userID)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync($"/api/users/{userID}");
-
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            HttpResponseMessage response = await _httpClient.GetAsync($"/api/users/{userID}");
+
+            if (!response.IsSuccessStatusCode)
             {
-                return null;
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    throw new HttpRequestException("Bad request", null, System.Net.HttpStatusCode.BadRequest);
+                }
+                else
+                {
+                    // throw new HttpRequestException($"Http request failed with status code {response.StatusCode}");
+                    return new UserDTO(
+                        PersonName: "Temporarily Unavailable",
+                        Email: "Temporarily Unavailable",
+                        Gender: "Temporarily Unavailable",
+                        UserID: Guid.Empty
+                    );
+                }
             }
-            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+
+            UserDTO? user = await response.Content.ReadFromJsonAsync<UserDTO>();
+
+            if (user == null)
             {
-                throw new HttpRequestException("Bad request", null, System.Net.HttpStatusCode.BadRequest);
+                throw new ArgumentException("Invalid User ID");
             }
-            else
-            {
-                throw new HttpRequestException($"Http request failed with status code {response.StatusCode}");
-            }
+
+            return user;
+
         }
-
-        UserDTO? user = await response.Content.ReadFromJsonAsync<UserDTO>();
-
-        if (user == null)
+        catch (BrokenCircuitException ex)
         {
-            throw new ArgumentException("Invalid User ID");
-        }
+            _logger.LogError(ex, "Request failed because of circuit breaker is in Open state. Returning dummy data.");
 
-        return user;
+            return new UserDTO(
+                    PersonName: "Temporarily Unavailable",
+                    Email: "Temporarily Unavailable",
+                    Gender: "Temporarily Unavailable",
+                    UserID: Guid.Empty);
+        }
     }
 }
