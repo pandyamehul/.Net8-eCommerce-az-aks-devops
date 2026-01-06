@@ -26,6 +26,7 @@
     - [Mongo Db Setup in Docker Container](#mongo-db-setup-in-docker-container)
     - [Bug Fixes in Order Microservice after testing](#bug-fixes-in-order-microservice-after-testing)
     - [Order Service itegration with User Service and Product Service](#order-service-itegration-with-user-service-and-product-service)
+    - [Fault Tolerence using Polly implementation in Order Service](#fault-tolerence-using-polly-implementation-in-order-service)
 
 ## Background
 
@@ -520,3 +521,12 @@ exit
 - Implemented HttpClientFactory in Order Service to call User Service and Product Service APIs.
 - Created UserApiClient and ProductApiClient classes to encapsulate API calls.
 - Added method in OrderService to fetch user details from user service while creating and updating an order.
+
+### Fault Tolerence using Polly implementation in Order Service
+
+- Added Polly nuget package to Order Service project.
+- Configured Polly policies (Retry, Circuit Breaker) for HttpClient calls to User Service and Product Service.
+- Updated UserApiClient and ProductApiClient to use Polly policies for resilience.
+- Tested Order Service integration with User Service and Product Service with fault scenarios (service unavailability, timeouts etc.)
+- Verified Polly policies are working as expected and Order Service handles failures gracefully.
+- Completed Fault Tolerence using Polly implementation in Order Service.
