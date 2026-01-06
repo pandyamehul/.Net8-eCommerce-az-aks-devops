@@ -20,7 +20,7 @@ public class UsersController : ControllerBase
     [HttpGet("{userID}")]
     public async Task<IActionResult> GetUserByUserID(Guid userID)
     {
-        await Task.Delay(1000);
+        //await Task.Delay(1000);
         // throw new NotImplementedException();
 
         if (userID == Guid.Empty)
