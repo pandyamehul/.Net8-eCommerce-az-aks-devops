@@ -58,4 +58,14 @@ public class UserServicePolicies : IUserServicePolicies
 
         return policy;
     }
+
+    public IAsyncPolicy<HttpResponseMessage> GetCombinedPolicy()
+    {
+        var retryPolicy = GetRetryPolicy();
+        var circuitBreakerPolicy = GetCircuitBreakerPolicy();
+        var timeoutPolicy = GetTimeoutPolicy();
+
+        AsyncPolicyWrap<HttpResponseMessage> wrappedPolicy = Policy.WrapAsync(retryPolicy, circuitBreakerPolicy, timeoutPolicy);
+        return wrappedPolicy;
+    }
 }

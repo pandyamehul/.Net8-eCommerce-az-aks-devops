@@ -44,9 +44,10 @@ builder.Services.AddHttpClient<UserServiceClient>(client =>
             );
         }
     )
-    .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IUserServicePolicies>().GetRetryPolicy())
-    .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IUserServicePolicies>().GetCircuitBreakerPolicy())
-    .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IUserServicePolicies>().GetTimeoutPolicy());
+    // .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IUserServicePolicies>().GetRetryPolicy())
+    // .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IUserServicePolicies>().GetCircuitBreakerPolicy())
+    // .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IUserServicePolicies>().GetTimeoutPolicy())
+    .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IUserServicePolicies>().GetCombinedPolicy());
 
 builder.Services.AddHttpClient<ProductServiceClient>(client =>
 {
@@ -55,7 +56,8 @@ builder.Services.AddHttpClient<ProductServiceClient>(client =>
         $"{builder.Configuration["ProductServicePort"]}"
     );
 })
-    .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IProductServicePolicies>().GetFallbackPolicy());
+    .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IProductServicePolicies>().GetFallbackPolicy())
+    .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IProductServicePolicies>().GetBulkheadIsolationPolicy());
 
 //-----------------------------------------//
 //------ Configure request pipeline ------ //

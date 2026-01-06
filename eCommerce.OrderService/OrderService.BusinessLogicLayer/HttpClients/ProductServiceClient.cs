@@ -1,4 +1,7 @@
+using DnsClient.Internal;
 using eCommerce.OrderService.BusinessLogicLayer.DTO;
+using Microsoft.Extensions.Logging;
+using Polly.Bulkhead;
 using System.Net.Http.Json;
 
 namespace eCommerce.OrderService.BusinessLogicLayer.HttpClients;
@@ -6,39 +9,55 @@ namespace eCommerce.OrderService.BusinessLogicLayer.HttpClients;
 public class ProductServiceClient
 {
     private readonly HttpClient _httpClient;
+    private readonly ILogger<ProductServiceClient> _logger;
 
-    public ProductServiceClient(HttpClient httpClient)
+    public ProductServiceClient(HttpClient httpClient, ILogger<ProductServiceClient> logger)
     {
         _httpClient = httpClient;
+        _logger = logger;
     }
 
     public async Task<ProductDTO?> GetProductByProductID(Guid productID)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync($"/api/products/search/product-id/{productID}");
-
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            HttpResponseMessage response = await _httpClient.GetAsync($"/api/products/search/product-id/{productID}");
+
+            if (!response.IsSuccessStatusCode)
             {
-                return null;
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    return null;
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    throw new HttpRequestException("Bad request", null, System.Net.HttpStatusCode.BadRequest);
+                }
+                else
+                {
+                    throw new HttpRequestException($"Http request failed with status code {response.StatusCode}");
+                }
             }
-            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+
+            ProductDTO? product = await response.Content.ReadFromJsonAsync<ProductDTO>();
+
+            if (product == null)
             {
-                throw new HttpRequestException("Bad request", null, System.Net.HttpStatusCode.BadRequest);
+                throw new ArgumentException("Invalid Product ID");
             }
-            else
-            {
-                throw new HttpRequestException($"Http request failed with status code {response.StatusCode}");
-            }
+
+            return product;
         }
-
-        ProductDTO? product = await response.Content.ReadFromJsonAsync<ProductDTO>();
-
-        if (product == null)
+        catch (BulkheadRejectedException ex)
         {
-            throw new ArgumentException("Invalid Product ID");
-        }
+            _logger.LogError(ex, "Bulkhead isolation blocks the request since the request queue is full");
 
-        return product;
-    }
+            return new ProductDTO(
+              ProductID: Guid.NewGuid(),
+              ProductName: "Temporarily Unavailable (Bulkhead)",
+              Category: "Temporarily Unavailable (Bulkhead)",
+              UnitPrice: 0,
+              QuantityInStock: 0);
+        }
+    }           
 }
