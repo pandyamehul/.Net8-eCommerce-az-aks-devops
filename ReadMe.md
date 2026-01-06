@@ -18,67 +18,67 @@
 
 ```mermaid
 graph TB
-    subgraph "Frontend Layer"
+    subgraph Presentation Layer
         UI[Angular 17 UI<br/>Port: 4200]
     end
 
-    subgraph "API Gateway / Load Balancer"
-        Gateway[API Gateway / NGINX<br/>Future Implementation]
+    subgraph Microservices Business Layer
+        US[User Service<br/>ASP.NET Core 8<br/>Port: 5001/7001<br/>Dapper ORM]
+        PS[Product Service<br/>ASP.NET Core 8<br/>Port: 5002/7002<br/>EF Core]
+        OS[Order Service<br/>ASP.NET Core 9<br/>Port: 5071/7182<br/>MongoDB Driver]
     end
 
-    subgraph "Microservices Layer"
-        UserService[User Service<br/>ASP.NET Core 8<br/>Port: 5001/7001<br/>Dapper ORM]
-        ProductService[Product Service<br/>ASP.NET Core 8<br/>Port: 5002/7002<br/>EF Core]
-        OrderService[Order Service<br/>ASP.NET Core 8<br/>Port: 5071/7182<br/>MongoDB Driver]
+    subgraph Data Layer
+        PG[(PostgreSQL<br/>User DB<br/>Port: 5432)]
+        MY[(MySQL<br/>Product DB<br/>Port: 3306)]
+        MG[(MongoDB<br/>Order DB<br/>Port: 27018)]
     end
 
-    subgraph "Data Layer"
-        PostgreSQL[(PostgreSQL<br/>User DB<br/>Port: 5432)]
-        MySQL[(MySQL<br/>Product DB<br/>Port: 3306)]
-        MongoDB[(MongoDB<br/>Orders DB<br/>Port: 27018)]
-    end
-
-    subgraph "Container Orchestration"
+    subgraph Container Orchestration
         Docker[Docker Compose<br/>Multi-container Management]
         GHCR[GitHub Container Registry<br/>Image Storage]
     end
 
-    subgraph "Infrastructure"
-        LinuxVM[Linux VM<br/>Deployment Target]
+    subgraph Infrastructure
+        LinuxVM[Linux VM <br> Docker Host <br> Deployment Target]
     end
 
-    UI -->|HTTP/REST API| UserService
-    UI -->|HTTP/REST API| ProductService
-    UI -->|HTTP/REST API| OrderService
+    UI --> |HTTP/REST API| US
+    UI --> |HTTP/REST API| PS
+    UI --> |HTTP/REST API| OS
 
-    UserService -->|Dapper Queries| PostgreSQL
-    ProductService -->|EF Core| MySQL
-    OrderService -->|MongoDB Driver| MongoDB
+    US --> |Dapper Queries| PG
+    PS --> |EF Core| MY
+    OS --> |MongoDB Driver| MG
 
-    UserService -.->|Docker Image| GHCR
-    ProductService -.->|Docker Image| GHCR
-    OrderService -.->|Docker Image| GHCR
+    US -.-> |Docker Image| GHCR
+    PS -.-> |Docker Image| GHCR
+    OS -.-> |Docker Image| GHCR
 
-    Docker -->|Orchestrates| UserService
-    Docker -->|Orchestrates| ProductService
-    Docker -->|Orchestrates| OrderService
-    Docker -->|Manages| PostgreSQL
-    Docker -->|Manages| MySQL
-    Docker -->|Manages| MongoDB
+    Docker --> |Orchestrates| US
+    Docker --> |Orchestrates| PS
+    Docker --> |Orchestrates| OS
+    Docker --> |Manages| PG
+    Docker --> |Manages| MY
+    Docker --> |Manages| MG
 
     GHCR -.->|Deploy| LinuxVM
     Docker -.->|Runs On| LinuxVM
 
     style UI fill:#61DAFB,stroke:#333,stroke-width:2px,color:#000
-    style UserService fill:#512BD4,stroke:#333,stroke-width:2px,color:#fff
-    style ProductService fill:#512BD4,stroke:#333,stroke-width:2px,color:#fff
-    style OrderService fill:#512BD4,stroke:#333,stroke-width:2px,color:#fff
-    style PostgreSQL fill:#336791,stroke:#333,stroke-width:2px,color:#fff
-    style MySQL fill:#4479A1,stroke:#333,stroke-width:2px,color:#fff
-    style MongoDB fill:#47A248,stroke:#333,stroke-width:2px,color:#fff
+    style US fill:#512BD4,stroke:#333,stroke-width:2px,color:#fff
+    style PS fill:#512BD4,stroke:#333,stroke-width:2px,color:#fff
+    style OS fill:#512BD4,stroke:#333,stroke-width:2px,color:#fff
+    style PG fill:#336791,stroke:#333,stroke-width:2px,color:#fff
+    style MY fill:#4479A1,stroke:#333,stroke-width:2px,color:#fff
+    style MG fill:#47A248,stroke:#333,stroke-width:2px,color:#fff
+    style Docker fill:#2496ED,stroke:#333,stroke-width:2px,color:#fff
+    style GHCR fill:#181717,stroke:#333,stroke-width:2px,color:#fff
     style Docker fill:#2496ED,stroke:#333,stroke-width:2px,color:#fff
     style GHCR fill:#181717,stroke:#333,stroke-width:2px,color:#fff
 ```
+
+> **Note**: OrderService uses HTTP clients to call other services. Default container targets (from Dockerfile envs): ProductService at port 5247, UserService at port 9090.
 
 ### Microservices Architecture
 
@@ -142,3 +142,5 @@ Each service:
 - Docker Compose (Multi-container orchestration)
 - Deployment to Dockerized environment on Linux VM box
 - MongoDb (NoSQL Database) in docker container
+- Fault Tolerance and Resilience (Polly - Future Implementation: Retry, Circuit Breaker, Fallback, Bulkhead Isolation, Timeout)
+- Logging and Monitoring (ILogger - Future Implementation)
