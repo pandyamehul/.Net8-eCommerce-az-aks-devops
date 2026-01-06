@@ -4,8 +4,8 @@ namespace eCommerce.OrderService.BusinessLogicLayer.Policies;
 
 public interface IUserServicePolicies
 {
-    IAsyncPolicy<HttpResponseMessage> GetRetryPolicy();
-    IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy();
-    IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy();
+    //IAsyncPolicy<HttpResponseMessage> GetRetryPolicy();
+    //IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy();
+    //IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy();
     IAsyncPolicy<HttpResponseMessage> GetCombinedPolicy();
 }

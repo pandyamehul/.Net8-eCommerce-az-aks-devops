@@ -1,8 +1,9 @@
-using eCommerce.OrderService.BusinessLogicLayer;
-using eCommerce.OrderService.DataAccessLayer;
 using eCommerce.OrderService.API.Middleware;
+using eCommerce.OrderService.BusinessLogicLayer;
 using eCommerce.OrderService.BusinessLogicLayer.HttpClients;
 using eCommerce.OrderService.BusinessLogicLayer.Policies;
+using eCommerce.OrderService.DataAccessLayer;
+using eCommerce.OrdersMicroservice.BusinessLogicLayer.Policies;
 
 //-----------------------------------------//
 //------ Configure build pipeline -------- //
@@ -35,6 +36,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddTransient<IUserServicePolicies, UserServicePolicies>();
 builder.Services.AddTransient<IProductServicePolicies, ProductServicePolicies>();
+builder.Services.AddTransient<IPollyPolicies, PollyPolicies>();
 
 builder.Services.AddHttpClient<UserServiceClient>(client =>
         {
