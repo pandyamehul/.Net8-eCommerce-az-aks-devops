@@ -2,6 +2,8 @@ using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.CircuitBreaker;
 using Polly.Retry;
+using Polly.Timeout;
+
 
 namespace eCommerce.OrderService.BusinessLogicLayer.Policies;
 
@@ -46,6 +48,13 @@ public class UserServicePolicies : IUserServicePolicies
                     _logger.LogInformation($"Circuit breaker closed. The subsequent requests will be allowed.");
                 }
             );
+
+        return policy;
+    }
+
+    public IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy()
+    {
+        AsyncTimeoutPolicy<HttpResponseMessage> policy = Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(1500));
 
         return policy;
     }

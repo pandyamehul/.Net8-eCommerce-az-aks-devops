@@ -45,7 +45,8 @@ builder.Services.AddHttpClient<UserServiceClient>(client =>
         }
     )
     .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IUserServicePolicies>().GetRetryPolicy())
-    .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IUserServicePolicies>().GetCircuitBreakerPolicy());
+    .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IUserServicePolicies>().GetCircuitBreakerPolicy())
+    .AddPolicyHandler(builder.Services.BuildServiceProvider().GetRequiredService<IUserServicePolicies>().GetTimeoutPolicy());
 
 builder.Services.AddHttpClient<ProductServiceClient>(client =>
 {

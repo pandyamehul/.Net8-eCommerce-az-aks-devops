@@ -2,6 +2,7 @@ using eCommerce.OrderService.BusinessLogicLayer.DTO;
 using eCommerce.OrderService.BusinessLogicLayer.Policies;
 using Microsoft.Extensions.Logging;
 using Polly.CircuitBreaker;
+using Polly.Timeout;
 using System.Net.Http.Json;
 
 namespace eCommerce.OrderService.BusinessLogicLayer.HttpClients;
@@ -62,9 +63,19 @@ public class UserServiceClient
             _logger.LogError(ex, "Request failed because of circuit breaker is in Open state. Returning dummy data.");
 
             return new UserDTO(
-                    PersonName: "Temporarily Unavailable",
-                    Email: "Temporarily Unavailable",
-                    Gender: "Temporarily Unavailable",
+                    PersonName: "Temporarily Unavailable (circuit breaker)",
+                    Email: "Temporarily Unavailable (circuit breaker)",
+                    Gender: "Temporarily Unavailable (circuit breaker)",
+                    UserID: Guid.Empty);
+        }
+        catch (TimeoutRejectedException ex)
+        {
+            _logger.LogError(ex, "Timeout occurred while fetching user data. Returning dummy data");
+
+            return new UserDTO(
+                    PersonName: "Temporarily Unavailable (timeout)",
+                    Email: "Temporarily Unavailable (timeout)",
+                    Gender: "Temporarily Unavailable (timeout)",
                     UserID: Guid.Empty);
         }
     }
