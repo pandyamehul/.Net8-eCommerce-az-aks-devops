@@ -35,4 +35,6 @@ ENV UserServiceName=localhost
 ENV UserServicePort=9090
 ENV ProductServiceName=localhost
 ENV ProductServicePort=5247
+ENV REDIS_HOST=localhost
+ENV REDIS_PORT=6380
 ENTRYPOINT ["dotnet", "OrderService.API.dll"]

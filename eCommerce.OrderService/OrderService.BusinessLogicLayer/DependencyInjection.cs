@@ -1,12 +1,13 @@
 ﻿using eCommerce.OrderService.BusinessLogicLayer.Mappers;
 using eCommerce.OrderService.BusinessLogicLayer.ServiceContracts;
 using eCommerce.OrderService.BusinessLogicLayer.Services;
-using FluentValidation;
-using Mapster;
-using MapsterMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using FluentValidation;
+using Mapster;
+using MapsterMapper;
+using StackExchange.Redis;
 
 namespace eCommerce.OrderService.BusinessLogicLayer;
 
@@ -34,6 +35,11 @@ public static class DependencyInjection
         services.AddScoped<IMapper, Mapper>();
 
         services.AddScoped<IOrdersService, OrdersService>();
+
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = $"{configuration["REDIS_HOST"]}:{configuration["REDIS_PORT"]}";
+        });
 
         return services;
     }

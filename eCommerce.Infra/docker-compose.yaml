@@ -47,10 +47,23 @@ services:
     networks:
       - ecomm.net9.aks.mongo.orderdb.network
 
+  ecomm.net9.aks.redis.cache:
+    image: redis:latest
+    container_name: ecomm.net9.aks.redis.cache
+    hostname: ecomm.net9.aks.redis.cache
+    restart: unless-stopped
+    ports:
+      - 6380:6379
+    volumes:
+      - ecomm.net9.aks.redis.cache.storage:/data
+    networks:
+      - ecomm.net9.aks.network
+
 volumes:
   ecomm.net9.aks.pg.userdb.storage:
   ecomm.net9.aks.mysql.productdb.storage:
   ecomm.net9.aks.mongo.orderdb.storage:
+  ecomm.net9.aks.redis.cache.storage:
 
 networks:
   ecomm.net9.aks.network:
