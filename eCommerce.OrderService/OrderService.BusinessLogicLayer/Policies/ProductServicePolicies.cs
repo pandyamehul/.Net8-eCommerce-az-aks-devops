@@ -21,7 +21,7 @@ public class ProductServicePolicies : IProductServicePolicies
     public IAsyncPolicy<HttpResponseMessage> GetFallbackPolicy()
     {
         AsyncFallbackPolicy<HttpResponseMessage> policy = Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
-          .FallbackAsync(async (context) =>
+          .FallbackAsync((context) =>
           {
               _logger.LogWarning("Fallback triggered: The request failed, returning dummy data");
 
@@ -38,7 +38,7 @@ public class ProductServicePolicies : IProductServicePolicies
                   Content = new StringContent(JsonSerializer.Serialize(product), Encoding.UTF8, "application/json")
               };
 
-              return response;
+              return Task.FromResult(response);
           });
 
         return policy;

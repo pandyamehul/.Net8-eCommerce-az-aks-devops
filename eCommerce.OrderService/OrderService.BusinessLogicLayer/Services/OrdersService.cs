@@ -75,7 +75,7 @@ public class OrdersService : IOrdersService
             throw new ArgumentException(errors);
         }
 
-        List<ProductDTO?> products = new List<ProductDTO?>();
+        List<ProductDTO> products = new List<ProductDTO>();
         //Validate order items using Fluent Validation
         foreach (OrderItemAddRequest orderItemAddRequest in orderAddRequest.OrderItems)
         {
@@ -127,13 +127,16 @@ public class OrdersService : IOrdersService
         OrderResponse addedOrderResponse = _mapper.Map<OrderResponse>(addedOrder);
 
         //TO DO: Load ProductName and Category in OrderItem
-        if (addedOrderResponse != null)
+        if (addedOrderResponse?.OrderItems is IEnumerable<OrderItemResponse> addedItems)
         {
-            foreach (OrderItemResponse orderItemResponse in addedOrderResponse.OrderItems)
+            foreach (OrderItemResponse? orderItemResponse in addedItems)
             {
-                ProductDTO? productDTO = products.Where(temp => temp.ProductID == orderItemResponse.ProductID).FirstOrDefault();
+                if (orderItemResponse is null)
+                    continue;
 
-                if (productDTO == null)
+                ProductDTO? productDTO = products.FirstOrDefault(temp => temp.ProductID == orderItemResponse.ProductID);
+
+                if (productDTO is null)
                     continue;
 
                 _mapper.Map<ProductDTO, OrderItemResponse>(productDTO, orderItemResponse);
@@ -220,13 +223,16 @@ public class OrdersService : IOrdersService
         OrderResponse updatedOrderResponse = _mapper.Map<OrderResponse>(updatedOrder);
 
         //TO DO: Load ProductName and Category in OrderItem
-        if (updatedOrderResponse != null)
+        if (updatedOrderResponse?.OrderItems is IEnumerable<OrderItemResponse> updatedItems)
         {
-            foreach (OrderItemResponse orderItemResponse in updatedOrderResponse.OrderItems)
+            foreach (OrderItemResponse? orderItemResponse in updatedItems)
             {
-                ProductDTO? productDTO = products.Where(temp => temp.ProductID == orderItemResponse.ProductID).FirstOrDefault();
+                if (orderItemResponse is null)
+                    continue;
 
-                if (productDTO == null)
+                ProductDTO? productDTO = products.FirstOrDefault(temp => temp.ProductID == orderItemResponse.ProductID);
+
+                if (productDTO is null)
                     continue;
 
                 _mapper.Map<ProductDTO, OrderItemResponse>(productDTO, orderItemResponse);
