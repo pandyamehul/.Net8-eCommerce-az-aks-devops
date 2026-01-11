@@ -45,19 +45,28 @@
 
 ## Technologies & Patterns Used
 
-- ASP.NET Core 8 (Web API in c#)
-- Microservices Architecture
+- ASP.NET Core 9 (Web API in c#)
+- Angular 17 (Frontend application)
+- C# 12 (Programming Language)
+
 - REST API (HTTP Methods - GET, POST, PUT, DELETE)
 - Mapster (Object to Object Mapping), earlier used AutoMapper
+- FluentValidation (Request validation)
+- CORS Policy Configuration
+- Fault Tolerance and Resilience (Polly - Future Implementation: Retry, Circuit Breaker, Fallback, Bulkhead Isolation, Timeout)
+- Logging and Monitoring (ILogger - Future Implementation)
+- Swagger (API Documentation)
+
+- Microservices Architecture
+- Dependency Injection (DI) Pattern
 - Repository Pattern
 - Dapper (Micro ORM for data access)
+
 - PostgreSQL (Relational Database) in docker container
-- FluentValidation (Request validation)
-- Dependency Injection (DI) Pattern
-- Swagger (API Documentation)
-- CORS Policy Configuration
-- Angular 17 (Frontend application)
 - MySQL (Relational Database) in docker container
+- MongoDb (NoSQL Database) in docker container
+- Redis Cache (In-memory centralized caching) in docker container
+
 - Docker (Containerization)
 - Docker Compose (Multi-container orchestration)
 - Deployment to Dockerized environment on Linux VM box

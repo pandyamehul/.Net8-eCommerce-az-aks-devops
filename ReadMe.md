@@ -32,6 +32,7 @@ graph TB
         PG[(PostgreSQL<br/>User DB<br/>Port: 5432)]
         MY[(MySQL<br/>Product DB<br/>Port: 3306)]
         MG[(MongoDB<br/>Order DB<br/>Port: 27018)]
+        RC[(Redis Cache<br/>In-memory Caching<br/>Port: 6380)]
     end
 
     subgraph Container Orchestration
@@ -50,6 +51,7 @@ graph TB
     US --> |Dapper Queries| PG
     PS --> |EF Core| MY
     OS --> |MongoDB Driver| MG
+    OS --> |Redis Client| RC
 
     US -.-> |Docker Image| GHCR
     PS -.-> |Docker Image| GHCR
@@ -72,6 +74,7 @@ graph TB
     style PG fill:#336791,stroke:#333,stroke-width:2px,color:#fff
     style MY fill:#4479A1,stroke:#333,stroke-width:2px,color:#fff
     style MG fill:#47A248,stroke:#333,stroke-width:2px,color:#fff
+    style RC fill:#61DAFB,stroke:#333,stroke-width:2px,color:#fff
     style Docker fill:#2496ED,stroke:#333,stroke-width:2px,color:#fff
     style GHCR fill:#181717,stroke:#333,stroke-width:2px,color:#fff
     style Docker fill:#2496ED,stroke:#333,stroke-width:2px,color:#fff
@@ -125,22 +128,28 @@ Each service:
 
 ## Technologies & Patterns Used
 
-- ASP.NET Core 8 (Web API in c#)
-- Microservices Architecture
+- ASP.NET Core 9 (Web API in c#)
+- Angular 17 (Frontend application)
+- C# 12 (Programming Language)
+
 - REST API (HTTP Methods - GET, POST, PUT, DELETE)
 - Mapster (Object to Object Mapping), earlier used AutoMapper
+- FluentValidation (Request validation)
+- CORS Policy Configuration
+- Fault Tolerance and Resilience (Polly - Future Implementation: Retry, Circuit Breaker, Fallback, Bulkhead Isolation, Timeout)
+- Logging and Monitoring (ILogger - Future Implementation)
+- Swagger (API Documentation)
+
+- Microservices Architecture
+- Dependency Injection (DI) Pattern
 - Repository Pattern
 - Dapper (Micro ORM for data access)
+
 - PostgreSQL (Relational Database) in docker container
-- FluentValidation (Request validation)
-- Dependency Injection (DI) Pattern
-- Swagger (API Documentation)
-- CORS Policy Configuration
-- Angular 17 (Frontend application)
 - MySQL (Relational Database) in docker container
+- MongoDb (NoSQL Database) in docker container
+- Redis Cache (In-memory centralized caching) in docker container
+
 - Docker (Containerization)
 - Docker Compose (Multi-container orchestration)
 - Deployment to Dockerized environment on Linux VM box
-- MongoDb (NoSQL Database) in docker container
-- Fault Tolerance and Resilience (Polly - Future Implementation: Retry, Circuit Breaker, Fallback, Bulkhead Isolation, Timeout)
-- Logging and Monitoring (ILogger - Future Implementation)
