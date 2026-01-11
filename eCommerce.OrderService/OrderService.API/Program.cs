@@ -3,7 +3,6 @@ using eCommerce.OrderService.BusinessLogicLayer;
 using eCommerce.OrderService.BusinessLogicLayer.HttpClients;
 using eCommerce.OrderService.BusinessLogicLayer.Policies;
 using eCommerce.OrderService.DataAccessLayer;
-using eCommerce.OrdersMicroservice.BusinessLogicLayer.Policies;
 
 //-----------------------------------------//
 //------ Configure build pipeline -------- //

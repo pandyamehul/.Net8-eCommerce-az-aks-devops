@@ -1,6 +1,7 @@
 using eCommerce.OrderService.BusinessLogicLayer.DTO;
 using Microsoft.Extensions.Logging;
 using Polly;
+using Polly.Bulkhead;
 using Polly.Fallback;
 using System.Text;
 using System.Text.Json;
