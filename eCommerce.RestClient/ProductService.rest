@@ -1,18 +1,18 @@
-GET {{product-service-endpoint}}/api/products
+GET {{product-service-endpoint}}/products
 Content-Type: application/json
 
 ###
 
-GET {{product-service-endpoint}}/api/products/search/product-id/11f2e86a-9d5d-42f9-b3c2-3e4d652e3df89
+GET {{product-service-endpoint}}/products/search/product-id/11f2e86a-9d5d-42f9-b3c2-3e4d652e3df89
 Content-Type: application/json
 
 ###
 
-GET {{product-service-endpoint}}/api/products/search/Apple
+GET {{product-service-endpoint}}/products/search/Apple
 Content-Type: application/json 
 
 ###
-POST {{product-service-endpoint}}/api/products
+POST {{product-service-endpoint}}/products
 Content-Type: application/json
 
 {
@@ -23,7 +23,7 @@ Content-Type: application/json
 }
 ###
 
-PUT {{product-service-endpoint}}/api/products
+PUT {{product-service-endpoint}}/products
 Content-Type: application/json
 
 {
@@ -35,7 +35,7 @@ Content-Type: application/json
 }
 ###
 
-DELETE {{product-service-endpoint}}/api/products/88cb4583-e3ef-48e3-a113-1c6353fe677f
+DELETE {{product-service-endpoint}}/products/88cb4583-e3ef-48e3-a113-1c6353fe677f
 Content-Type: application/json
 
 ###

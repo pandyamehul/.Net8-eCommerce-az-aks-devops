@@ -3,14 +3,19 @@
         "$shared": {
             "shared-variable": "shared-value"
         },
-        "local-dev": {
-            "user-service-endpoint": "http://localhost:9090",
-            "product-service-endpoint": "https://localhost:7249",
-            "order-service-endpoint": "http://localhost:5071"
+        "local-dev (direct)": {
+            "user-service-endpoint": "http://localhost:9090/api",
+            "product-service-endpoint": "https://localhost:7249/api",
+            "order-service-endpoint": "http://localhost:5071/api"
+        },
+        "local-dev (via GW)": {
+            "user-service-endpoint": "http://localhost:4000/gateway/Users",
+            "product-service-endpoint": "http://localhost:4000/gateway",
+            "order-service-endpoint": "http://localhost:4000/gateway"
         },
         "docker-endpoint": {
             "user-service-endpoint": "http://localhost:5000",
-            "product-service-endpoint": "http://localhost:6000",
+            "product-service-endpoint": "http://localhost:6000/api/products",
             "order-service-endpoint": "http://localhost:7000"
         }
     }

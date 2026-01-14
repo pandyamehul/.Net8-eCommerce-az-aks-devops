@@ -1,25 +1,25 @@
-GET {{order-service-endpoint}}/api/Orders
+GET {{order-service-endpoint}}/Orders
 Accept: application/json
 
 ###
 
-GET {{order-service-endpoint}}/api/Orders/search/orderid/b8f3fbfc-5648-40f8-bb51-f158b32f77d9
+GET {{order-service-endpoint}}/Orders/search/orderid/b8f3fbfc-5648-40f8-bb51-f158b32f77d9
 Accept: application/json
 ###
 
-GET {{order-service-endpoint}}/api/Orders/search/productid/3f3e8b3a-4a50-4cd0-8d8e-1e178ae2cfc1
+GET {{order-service-endpoint}}/Orders/search/productid/3f3e8b3a-4a50-4cd0-8d8e-1e178ae2cfc1
 Accept: application/json
 ###
 
-GET {{order-service-endpoint}}/api/Orders/search/userid/c32f8b42-60e6-4c02-90a7-9143ab37189f
+GET {{order-service-endpoint}}/Orders/search/userid/c32f8b42-60e6-4c02-90a7-9143ab37189f
 Accept: application/json
 ###
 
-GET {{order-service-endpoint}}/api/Orders/search/orderDate/2022-03-01
+GET {{order-service-endpoint}}/Orders/search/orderDate/2022-03-01
 Accept: application/json
 ###
 
-POST {{order-service-endpoint}}/api/Orders
+POST {{order-service-endpoint}}/Orders
 Content-Type: application/json
 
 {
@@ -37,7 +37,7 @@ Content-Type: application/json
 
 ###
 
-PUT {{order-service-endpoint}}/api/Orders/36b8acb3-6034-445d-8af4-46df5d380c44
+PUT {{order-service-endpoint}}/Orders/36b8acb3-6034-445d-8af4-46df5d380c44
 Content-Type: application/json
 
 {
@@ -55,7 +55,7 @@ Content-Type: application/json
 }
 ###
 
-DELETE {{order-service-endpoint}}/api/Orders/ed0bface-9633-4d9c-aa76-9bc9bdee8aad
+DELETE {{order-service-endpoint}}/Orders/ed0bface-9633-4d9c-aa76-9bc9bdee8aad
 Accept: application/json
 
 ###

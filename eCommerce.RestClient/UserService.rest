@@ -1,4 +1,4 @@
-POST {{user-service-endpoint}}/api/auth/register
+POST {{user-service-endpoint}}/auth/register
 Content-Type: application/json
 
 {
@@ -10,7 +10,7 @@ Content-Type: application/json
 
 ###
 
-POST {{user-service-endpoint}}/api/auth/login
+POST {{user-service-endpoint}}/auth/login
 Content-Type: application/json
 
 {
@@ -19,7 +19,7 @@ Content-Type: application/json
 }
 ###
 
-GET {{user-service-endpoint}}/api/users/07248f51-cab1-49b6-91aa-b8422c980154
+GET {{user-service-endpoint}}/users/07248f51-cab1-49b6-91aa-b8422c980154
 Content-Type: application/json
 
 ###

@@ -118,6 +118,16 @@ services:
     depends_on:
       - ecomm.net9.aks.mongo.orderdb
 
+  net9-ecomm-apigateway:
+    image: net9-ecomm-apigateway
+    build:
+      context: .
+      dockerfile: ./OrderService.ApiGw/Dockerfile
+    ports:
+      - "4000:8080"
+    networks:
+      - ecomm.net9.aks.network
+
 volumes:
   ecomm.net9.aks.pg.userdb.storage:
   ecomm.net9.aks.mysql.productdb.storage:

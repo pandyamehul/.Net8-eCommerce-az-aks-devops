@@ -5,8 +5,8 @@
       "DownstreamPathTemplate": "/api/Orders",
       "DownstreamHostAndPorts": [
         {
-          "Host": "net9-ecomm-orderapi",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 5071
         }
       ],
       "UpstreamHttpMethod": [
@@ -21,8 +21,8 @@
       "DownstreamPathTemplate": "/api/Orders/search/orderid/{orderID}",
       "DownstreamHostAndPorts": [
         {
-          "Host": "net9-ecomm-orderapi",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 5071
         }
       ],
       "UpstreamHttpMethod": [
@@ -35,8 +35,8 @@
       "DownstreamPathTemplate": "/api/Orders/search/productid/{productID}",
       "DownstreamHostAndPorts": [
         {
-          "Host": "net9-ecomm-orderapi",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 5071
         }
       ],
       "UpstreamHttpMethod": [
@@ -49,8 +49,8 @@
       "DownstreamPathTemplate": "/api/Orders/search/orderDate/{orderDate}",
       "DownstreamHostAndPorts": [
         {
-          "Host": "net9-ecomm-orderapi",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 5071
         }
       ],
       "UpstreamHttpMethod": [
@@ -63,8 +63,8 @@
       "DownstreamPathTemplate": "/api/Orders/search/userid/{userID}",
       "DownstreamHostAndPorts": [
         {
-          "Host": "net9-ecomm-orderapi",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 5071
         }
       ],
       "UpstreamHttpMethod": [
@@ -77,8 +77,8 @@
       "DownstreamPathTemplate": "/api/Orders/{orderID}",
       "DownstreamHostAndPorts": [
         {
-          "Host": "net9-ecomm-orderapi",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 5071
         }
       ],
       "UpstreamHttpMethod": [
@@ -93,8 +93,8 @@
       "DownstreamPathTemplate": "/api/Products",
       "DownstreamHostAndPorts": [
         {
-          "Host": "net9-ecomm-productapi",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 5247
         }
       ],
       "UpstreamHttpMethod": [
@@ -110,8 +110,8 @@
       "DownstreamPathTemplate": "/api/Products/{productID}",
       "DownstreamHostAndPorts": [
         {
-          "Host": "net9-ecomm-productapi",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 5247
         }
       ],
       "UpstreamHttpMethod": [
@@ -125,8 +125,8 @@
       "DownstreamPathTemplate": "/api/Products/search/product-id/{productID}",
       "DownstreamHostAndPorts": [
         {
-          "Host": "net9-ecomm-productapi",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 5247
         }
       ],
       "UpstreamHttpMethod": [
@@ -139,8 +139,8 @@
       "DownstreamPathTemplate": "/api/Products/search/{searchString}",
       "DownstreamHostAndPorts": [
         {
-          "Host": "net9-ecomm-productapi",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 5247
         }
       ],
       "UpstreamHttpMethod": [
@@ -153,7 +153,7 @@
       "DownstreamPathTemplate": "/api/Auth/register",
       "DownstreamHostAndPorts": [
         {
-          "Host": "net9-ecomm-userapi",
+          "Host": "localhost",
           "Port": 9090
         }
       ],
@@ -168,7 +168,7 @@
       "DownstreamPathTemplate": "/api/Auth/login",
       "DownstreamHostAndPorts": [
         {
-          "Host": "net9-ecomm-userapi",
+          "Host": "localhost",
           "Port": 9090
         }
       ],
@@ -183,7 +183,7 @@
       "DownstreamPathTemplate": "/api/users/{userID}",
       "DownstreamHostAndPorts": [
         {
-          "Host": "net9-ecomm-userapi",
+          "Host": "localhost",
           "Port": 9090
         }
       ],
