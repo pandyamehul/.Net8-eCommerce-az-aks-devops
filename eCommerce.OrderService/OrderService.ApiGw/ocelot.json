@@ -112,6 +112,16 @@
       "RetryOptions": {
         "RetryCount": 3,
         "RetryOnServerError": true
+      },
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "ClientIdHeader": "ClientId-Header",
+        "EnableRateLimiting": true,
+        "Period": "10s",
+        "PeriodTimespan": 30,
+        "Limit": 5,
+        "HttpStatusCode": 429,
+        "QuotaExceededMessage": "Too many requests. Please try again later."
       }
     },
     {
