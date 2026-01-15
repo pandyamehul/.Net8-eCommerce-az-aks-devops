@@ -101,15 +101,23 @@ services:
       context: .
       dockerfile: OrderService.API/Dockerfile
     environment:
+      - ASPNETCORE_ENVIRONMENT=Development
       - MONGODB_HOST=ecomm.net9.aks.mongo.orderdb
       - MONGODB_PORT=27017
       - MONGODB_DATABASE=OrdersDatabase
-      - UserServiceName=net9-ecomm-userapi
-      - UserServicePort=9090
-      - ProductServiceName=net9-ecomm-productapi
-      - ProductServicePort=8080
       - REDIS_HOST=ecomm.net9.aks.redis.cache
       - REDIS_PORT=6379
+      # Local docker endpoint settings for dependent services (used in debugging mode)
+      # - UserServiceName=net9-ecomm-userapi
+      # - UserServicePort=9090
+      # - ProductServiceName=net9-ecomm-productapi
+      # - ProductServicePort=8080
+
+      # Local docker endpoint settings for dependent services via API Gateway (used in debugging mode)
+      - UserServiceName=net9-ecomm-apigateway
+      - UserServicePort=4000
+      - ProductServiceName=net9-ecomm-apigateway
+      - ProductServicePort=4000
     ports:
       - "7000:8080"
     networks:
