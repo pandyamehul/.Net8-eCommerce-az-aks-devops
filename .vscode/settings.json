@@ -14,9 +14,14 @@
             "order-service-endpoint": "http://localhost:4000/gateway"
         },
         "docker-endpoint": {
-            "user-service-endpoint": "http://localhost:5000",
-            "product-service-endpoint": "http://localhost:6000/api/products",
-            "order-service-endpoint": "http://localhost:7000"
+            "user-service-endpoint": "http://localhost:5000/api",
+            "product-service-endpoint": "http://localhost:6000/api",
+            "order-service-endpoint": "http://localhost:7000/api"
+        },
+        "docker-endpoint (via GW)": {
+            "user-service-endpoint": "http://localhost:4000/gateway/Users",
+            "product-service-endpoint": "http://localhost:4000/gateway",
+            "order-service-endpoint": "http://net9-ecomm-apigateway:4000/gateway"
         }
     }
 }
