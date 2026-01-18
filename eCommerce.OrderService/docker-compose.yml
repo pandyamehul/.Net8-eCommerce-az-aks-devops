@@ -59,6 +59,22 @@ services:
     networks:
       - ecomm.net9.aks.network
 
+  ecomm.net9.aks.msg.queues:
+    image: rabbitmq:management
+    container_name: ecomm.net9.aks.msg.queues
+    hostname: ecomm.net9.aks.msg.queues
+    restart: always
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    volumes:
+      - ecomm.net9.aks.msg.queues.storage:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - ecomm.net9.aks.network
+
   net9-ecomm-userapi:
     image: net9-ecomm-userapi:2.0
     environment:
@@ -87,6 +103,11 @@ services:
       - MYSQL_DATABASE=eCommerceProducts
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpassword
+      - RabbitMQ_HostName=ecomm.net9.aks.msg.queues
+      - RabbitMQ_UserName=guest
+      - RabbitMQ_Password=guest
+      - RabbitMQ_Port=5672
+      - RabbitMQ_Products_Exchange=product.exchange
     ports:
       - "6000:8080"
     networks:
@@ -107,6 +128,12 @@ services:
       - MONGODB_DATABASE=OrdersDatabase
       - REDIS_HOST=ecomm.net9.aks.redis.cache
       - REDIS_PORT=6379
+      - RabbitMQ_HostName=ecomm.net9.aks.msg.queues
+      - RabbitMQ_UserName=guest
+      - RabbitMQ_Password=guest
+      - RabbitMQ_Port=5672
+      - RabbitMQ_Products_Exchange=product.exchange
+      - OCELOT_CONFIGFILE=ocelot.json
       # Local docker endpoint settings for dependent services (used in debugging mode)
       # - UserServiceName=net9-ecomm-userapi
       # - UserServicePort=9090
@@ -115,9 +142,9 @@ services:
 
       # Local docker endpoint settings for dependent services via API Gateway (used in debugging mode)
       - UserServiceName=net9-ecomm-apigateway
-      - UserServicePort=4000
+      - UserServicePort=8080
       - ProductServiceName=net9-ecomm-apigateway
-      - ProductServicePort=4000
+      - ProductServicePort=8080
     ports:
       - "7000:8080"
     networks:
@@ -141,6 +168,7 @@ volumes:
   ecomm.net9.aks.mysql.productdb.storage:
   ecomm.net9.aks.mongo.orderdb.storage:
   ecomm.net9.aks.redis.cache.storage:
+  ecomm.net9.aks.msg.queues.storage:
 
 networks:
   ecomm.net9.aks.network:

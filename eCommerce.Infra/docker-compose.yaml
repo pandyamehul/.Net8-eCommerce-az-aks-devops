@@ -59,11 +59,28 @@ services:
     networks:
       - ecomm.net9.aks.network
 
+  ecomm.net9.aks.msg.queues:
+    image: rabbitmq:management
+    container_name: ecomm.net9.aks.msg.queues
+    hostname: ecomm.net9.aks.msg.queues
+    restart: always
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    volumes:
+      - ecomm.net9.aks.msg.queues.storage:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - ecomm.net9.aks.network
+
 volumes:
   ecomm.net9.aks.pg.userdb.storage:
   ecomm.net9.aks.mysql.productdb.storage:
   ecomm.net9.aks.mongo.orderdb.storage:
   ecomm.net9.aks.redis.cache.storage:
+  ecomm.net9.aks.msg.queues.storage:
 
 networks:
   ecomm.net9.aks.network:
