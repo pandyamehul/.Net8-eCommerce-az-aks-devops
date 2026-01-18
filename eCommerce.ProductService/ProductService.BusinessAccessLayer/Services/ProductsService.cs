@@ -6,6 +6,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using System.Linq.Expressions;
 using MapsterMapper;
+using eCommerce.ProductService.BusinessAccessLayer.Publisher;
 
 namespace eCommerce.ProductsService.BusinessLogicLayer.Services;
 
@@ -15,14 +16,22 @@ public class ProductsService : IProductsService
     private readonly IValidator<ProductUpdateRequest> _productUpdateRequestValidator;
     private readonly IMapper _mapper;
     private readonly IProductsRepository _productsRepository;
+    private readonly IProductEvent _productEvent;
 
 
-    public ProductsService(IValidator<ProductAddRequest> productAddRequestValidator, IValidator<ProductUpdateRequest> productUpdateRequestValidator, IMapper mapper, IProductsRepository productsRepository)
+    public ProductsService(
+        IValidator<ProductAddRequest> productAddRequestValidator,
+        IValidator<ProductUpdateRequest> productUpdateRequestValidator,
+        IMapper mapper,
+        IProductsRepository productsRepository,
+        IProductEvent productEvent
+        )
     {
         _productAddRequestValidator = productAddRequestValidator;
         _productUpdateRequestValidator = productUpdateRequestValidator;
         _mapper = mapper;
         _productsRepository = productsRepository;
+        _productEvent = productEvent;
     }
 
 
@@ -43,9 +52,9 @@ public class ProductsService : IProductsService
             throw new ArgumentException(errors);
         }
 
-
         //Attempt to add product
-        Product productInput = _mapper.Map<Product>(productAddRequest); //Map productAddRequest into 'Product' type (it invokes ProductAddRequestToProductMappingProfile)
+        //Map productAddRequest into 'Product' type (it invokes ProductAddRequestToProductMappingProfile)
+        Product productInput = _mapper.Map<Product>(productAddRequest);
         Product? addedProduct = await _productsRepository.AddProduct(productInput);
 
         if (addedProduct == null)
@@ -53,7 +62,8 @@ public class ProductsService : IProductsService
             return null;
         }
 
-        ProductResponse addedProductResponse = _mapper.Map<ProductResponse>(addedProduct); //Map addedProduct into 'ProductRepsonse' type (it invokes ProductToProductResponseMappingProfile)
+        //Map addedProduct into 'ProductRepsonse' type (it invokes ProductToProductResponseMappingProfile)
+        ProductResponse addedProductResponse = _mapper.Map<ProductResponse>(addedProduct!);
 
         return addedProductResponse;
     }
@@ -82,7 +92,8 @@ public class ProductsService : IProductsService
             return null;
         }
 
-        ProductResponse productResponse = _mapper.Map<ProductResponse>(product); //Invokes ProductToProductResponseMappingProfile
+        // product is not null here
+        ProductResponse productResponse = _mapper.Map<ProductResponse>(product);
         return productResponse;
     }
 
@@ -91,8 +102,9 @@ public class ProductsService : IProductsService
     {
         IEnumerable<Product?> products = await _productsRepository.GetProducts();
 
+        // Only map non-null products
         //Invokes ProductToProductResponseMappingProfile
-        IEnumerable<ProductResponse?> productResponses = _mapper.Map<IEnumerable<ProductResponse>>(products); 
+        IEnumerable<ProductResponse?> productResponses = _mapper.Map<IEnumerable<ProductResponse>>(products.Where(p => p != null).ToList());
         return productResponses.ToList();
     }
 
@@ -101,8 +113,8 @@ public class ProductsService : IProductsService
     {
         IEnumerable<Product?> products = await _productsRepository.GetProductsByCondition(conditionExpression);
 
-        //Invokes ProductToProductResponseMappingProfile
-        IEnumerable<ProductResponse?> productResponses = _mapper.Map<IEnumerable<ProductResponse>>(products); 
+        // Only map non-null products
+        IEnumerable<ProductResponse?> productResponses = _mapper.Map<IEnumerable<ProductResponse>>(products.Where(p => p != null).ToList());
         return productResponses.ToList();
     }
 
@@ -116,7 +128,6 @@ public class ProductsService : IProductsService
             throw new ArgumentException("Invalid Product ID");
         }
 
-
         //Validate the product using Fluent Validation
         ValidationResult validationResult = await _productUpdateRequestValidator.ValidateAsync(productUpdateRequest);
 
@@ -124,16 +135,33 @@ public class ProductsService : IProductsService
         if (!validationResult.IsValid)
         {
             //Error1, Error2, ...
-            string errors = string.Join(", ", validationResult.Errors.Select(temp => temp.ErrorMessage)); 
+            string errors = string.Join(", ", validationResult.Errors.Select(temp => temp.ErrorMessage));
             throw new ArgumentException(errors);
         }
 
-
         //Map from ProductUpdateRequest to Product type
         //Invokes ProductUpdateRequestToProductMappingProfile
-        Product product = _mapper.Map<Product>(productUpdateRequest); 
+        Product product = _mapper.Map<Product>(productUpdateRequest);
 
+        //Check if product name is changed
+        bool isProductNameChanged = productUpdateRequest.ProductName != existingProduct.ProductName;
+
+        //Update product in database
         Product? updatedProduct = await _productsRepository.UpdateProduct(product);
+
+        if (updatedProduct == null)
+        {
+            return null;
+        }
+
+        //Publish product.update.name message to the exchange
+        if (isProductNameChanged)
+        {
+            string routingKey = "net9.ecomm.aks.product.update.name";
+            var message = new ProductNameUpdateEvent(product.ProductID, product.ProductName);
+
+            _productEvent.Publish<ProductNameUpdateEvent>(routingKey, message);
+        }
 
         ProductResponse? updatedProductResponse = _mapper.Map<ProductResponse>(updatedProduct);
 

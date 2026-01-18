@@ -1,10 +1,11 @@
 ﻿using eCommerce.ProductService.BusinessAccessLayer.Mappers;
 using eCommerce.ProductsService.BusinessLogicLayer.ServiceContracts;
 using eCommerce.ProductsService.BusinessLogicLayer.Validators;
+using eCommerce.ProductService.BusinessAccessLayer.Publisher;
+using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
 using Mapster;
 using MapsterMapper;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace eCommerce.ProductsService.BusinessLogicLayer;
 
@@ -27,6 +28,7 @@ public static class DependencyInjection
         services.AddScoped<IMapper, ServiceMapper>();
 
         services.AddScoped<IProductsService, ProductsService.BusinessLogicLayer.Services.ProductsService>();
+        services.AddTransient<IProductEvent, ProductEventPublish>();
 
         return services;
     }
