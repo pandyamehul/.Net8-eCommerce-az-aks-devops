@@ -26,13 +26,20 @@ Content-Type: application/json
 PUT {{product-service-endpoint}}/products
 Content-Type: application/json
 
-{
-  "productID": "88cb4583-e3ef-48e3-a113-1c6353fe677f",
-  "productName": "Executive Office Desk 2",
-  "category": "Furniture",
-  "unitPrice": 359.99,
-  "quantityInStock": 21
-}
+# {
+#   "productID": "88cb4583-e3ef-48e3-a113-1c6353fe677f",
+#   "productName": "Executive Office Desk 2",
+#   "category": "Furniture",
+#   "unitPrice": 359.99,
+#   "quantityInStock": 21
+# }
+  {
+    "productID": "11f2e86a-9d5d-42f9-b3c2-3e4d652e3df8",
+    "productName": "Executive Office Desk - updated 4",
+    "category": "Furniture",
+    "unitPrice": 269.99,
+    "quantityInStock": 10
+  }
 ###
 
 DELETE {{product-service-endpoint}}/products/88cb4583-e3ef-48e3-a113-1c6353fe677f

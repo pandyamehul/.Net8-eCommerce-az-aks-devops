@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
@@ -10,8 +11,9 @@ public class ProductEventPublish : IProductEvent, IDisposable
     private readonly IConfiguration _configuration;
     private readonly IChannel _channel;
     private readonly IConnection _connection;
+    private readonly ILogger<ProductEventPublish> _logger;
 
-    public ProductEventPublish(IConfiguration configuration)
+    public ProductEventPublish(IConfiguration configuration, ILogger<ProductEventPublish> logger)
     {
         _configuration = configuration;
 
@@ -19,6 +21,7 @@ public class ProductEventPublish : IProductEvent, IDisposable
         string userName = _configuration["RabbitMQ_UserName"]!;
         string password = _configuration["RabbitMQ_Password"]!;
         string port = _configuration["RabbitMQ_Port"]!;
+        _logger = logger;
 
         var connectionFactory = new ConnectionFactory
         {
@@ -28,6 +31,7 @@ public class ProductEventPublish : IProductEvent, IDisposable
             Port = Convert.ToInt32(port)
         };
 
+        _logger.LogInformation("Creating RabbitMQ connection and channel...");
         // NEW CLIENT API: create connection and channel asynchronously, then block
         _connection = connectionFactory
             .CreateConnectionAsync()
@@ -38,6 +42,7 @@ public class ProductEventPublish : IProductEvent, IDisposable
             .CreateChannelAsync()
             .GetAwaiter()
             .GetResult();
+        _logger.LogInformation("RabbitMQ connection and channel created.");
     }
 
     public void Publish<T>(string routingKey, T message)
@@ -46,6 +51,9 @@ public class ProductEventPublish : IProductEvent, IDisposable
         byte[] messageBodyInBytes = Encoding.UTF8.GetBytes(messageJson);
 
         string exchangeName = _configuration["RabbitMQ_Products_Exchange"]!;
+
+        _logger.LogInformation("Publishing message to exchange {Exchange} with routing key {RoutingKey}: {MessageJson}",
+            exchangeName, routingKey, messageJson);
 
         // Adjust to your actual IChannel API if method names differ
         _channel
@@ -57,6 +65,8 @@ public class ProductEventPublish : IProductEvent, IDisposable
             .BasicPublishAsync(exchangeName, routingKey, body: messageBodyInBytes)
             .GetAwaiter()
             .GetResult();
+
+        _logger.LogInformation("Message published successfully.");
     }
 
     public void Dispose()
