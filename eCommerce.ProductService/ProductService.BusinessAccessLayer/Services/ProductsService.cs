@@ -157,6 +157,8 @@ public class ProductsService : IProductsService
         //Publish product.update.name message to the exchange
         if (isProductNameChanged)
         {
+            // Publish event to RabbitMQ exchange about product name update
+            // Note: routing key should match the one used by the consumer in OrderService
             string routingKey = "net9.ecomm.aks.product.update.name";
             var message = new ProductNameUpdateEvent(product.ProductID, product.ProductName);
 
