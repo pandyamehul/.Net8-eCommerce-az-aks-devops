@@ -94,7 +94,7 @@ services:
       - ecomm.net9.aks.pg.userdb
 
   net9-ecomm-productapi:
-    image: net9-ecomm-productapi:2.0
+    image: net9-ecomm-productapi:2.1
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_ENVIRONMENT=Development
@@ -118,6 +118,7 @@ services:
 
   net9-ecomm-orderapi:
     image: net9-ecomm-orderapi
+    hostname: net9-ecomm-orderapi
     build:
       context: .
       dockerfile: OrderService.API/Dockerfile
@@ -155,6 +156,7 @@ services:
 
   net9-ecomm-apigateway:
     image: net9-ecomm-apigateway
+    hostname: net9-ecomm-apigateway
     build:
       context: .
       dockerfile: ./OrderService.ApiGw/Dockerfile
