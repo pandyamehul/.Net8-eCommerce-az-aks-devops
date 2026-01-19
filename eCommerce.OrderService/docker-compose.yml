@@ -94,7 +94,7 @@ services:
       - ecomm.net9.aks.pg.userdb
 
   net9-ecomm-productapi:
-    image: net9-ecomm-productapi:2.1
+    image: net9-ecomm-productapi:2.2
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_ENVIRONMENT=Development
