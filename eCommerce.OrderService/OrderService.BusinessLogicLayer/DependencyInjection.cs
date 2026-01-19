@@ -8,6 +8,7 @@ using FluentValidation;
 using Mapster;
 using MapsterMapper;
 using StackExchange.Redis;
+using eCommerce.OrderService.BusinessLogicLayer.Consumer;
 
 namespace eCommerce.OrderService.BusinessLogicLayer;
 
@@ -40,6 +41,10 @@ public static class DependencyInjection
         {
             options.Configuration = $"{configuration["REDIS_HOST"]}:{configuration["REDIS_PORT"]}";
         });
+
+        services.AddTransient<IProductNameUpdateConsumer, ProductNameUpdateConsumer>();
+
+        services.AddHostedService<ProductNameUpdateHostedService>();
 
         return services;
     }
