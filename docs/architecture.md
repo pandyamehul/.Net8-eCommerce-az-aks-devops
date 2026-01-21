@@ -11,9 +11,13 @@ graph TB
     end
 
     subgraph Microservices Business Layer
-        US[User Service<br/>ASP.NET Core 8<br/>Port: 5001/7001<br/>Dapper ORM]
-        PS[Product Service<br/>ASP.NET Core 8<br/>Port: 5002/7002<br/>EF Core]
+        US[User Service<br/>ASP.NET Core 9<br/>Port: 5001/7001<br/>Dapper ORM]
+        PS[Product Service<br/>ASP.NET Core 9<br/>Port: 5002/7002<br/>EF Core]
         OS[Order Service<br/>ASP.NET Core 9<br/>Port: 5071/7182<br/>MongoDB Driver]
+    end
+
+    subgraph Messaging
+        RMQ[RabbitMQ<br/>Exchange: product.exchange<br/>RoutingKey: net9.ecomm.aks.product.update.name]
     end
 
     subgraph Data Layer
@@ -27,17 +31,24 @@ graph TB
         GHCR[GitHub Container Registry<br/>Image Storage]
     end
 
-    subgraph Infrastructure
-        LinuxVM[Linux VM <br> Docker Host <br> Deployment Target]
-    end
+    %% subgraph Infrastructure
+    %%     LinuxVM[Linux VM <br> Docker Host <br> Deployment Target]
+    %% end
 
-    UI --> |HTTP/REST API| US
-    UI --> |HTTP/REST API| PS
-    UI --> |HTTP/REST API| OS
+    UI --> |HTTP/REST API| AG
+    AG[API Gateway - Ocelot<br/>Port: 8080]
+
+    AG --> |HTTP/REST API| US
+    AG --> |HTTP/REST API| PS
+    AG --> |HTTP/REST API| OS
+
+    PS --> | Async comm. - PUB: message/event via queues | RMQ   
+    OS --> | Async comm. - SUB: message/event via queues | RMQ
+    
 
     US --> |Dapper Queries| PG
     PS --> |EF Core| MY
-    OS --> |MongoDB Driver| MG
+    OS --> |MongoDB Driver| MG    
 
     US -.-> |Docker Image| GHCR
     PS -.-> |Docker Image| GHCR
@@ -50,8 +61,8 @@ graph TB
     Docker --> |Manages| MY
     Docker --> |Manages| MG
 
-    GHCR -.->|Deploy| LinuxVM
-    Docker -.->|Runs On| LinuxVM
+    %% GHCR -.->|Deploy| LinuxVM
+    %% Docker -.->|Runs On| LinuxVM
 
     style UI fill:#61DAFB,stroke:#333,stroke-width:2px,color:#000
     style US fill:#512BD4,stroke:#333,stroke-width:2px,color:#fff
@@ -64,6 +75,7 @@ graph TB
     style GHCR fill:#181717,stroke:#333,stroke-width:2px,color:#fff
     style Docker fill:#2496ED,stroke:#333,stroke-width:2px,color:#fff
     style GHCR fill:#181717,stroke:#333,stroke-width:2px,color:#fff
+    style RMQ fill:#BB5566,stroke:#333,stroke-width:2px,color:#fff,text-align:left
 ```
 
 > **Note**: OrderService uses HTTP clients to call other services. Default container targets (from Dockerfile envs): ProductService at port 5247, UserService at port 9090.
@@ -82,6 +94,30 @@ graph TB
   - Container env defaults (from Dockerfile): `MONGODB_HOST=localhost`, `MONGODB_PORT=27017`
   - Also configured to call other services using env keys: `UserServiceName`, `UserServicePort`, `ProductServiceName`, `ProductServicePort` (defaults point to `localhost:9090` and `localhost:5247` respectively)
   - Exposed container ports: `8080`, `8081`
+
+## **UI Component**
+
+- **Framework**: Angular 17 (project at `eCommerce.UI`).
+- **Responsibilities**: client-side application — routing, product catalog, cart management, authentication UI, and calling backend APIs through the API Gateway (Ocelot).
+- **Key paths**: `eCommerce.UI/src` contains app code; `eCommerce.UI/package.json` contains dev scripts.
+- **Local dev**: run from repo root in the `eCommerce.UI` folder:
+
+```bash
+cd eCommerce.UI
+npm install
+npm run start    # starts Angular dev server (default port 4200)
+```
+
+- **Production build**:
+
+```bash
+cd eCommerce.UI
+npm run build    # outputs production assets in dist/
+```
+
+- **Container**: application can be containerized and served by a static web server or via the same Docker Compose setup used for services; map the container port `4200` (or serve built `dist/` from Nginx).
+
+- **Integration**: UI calls the API Gateway at `http://<gateway-host>:8080` (configured in `eCommerce.UI/src/app/app.config.ts` or environment files). When running locally with Docker Compose the gateway proxies to service container ports.
 
 ## **Per-service sequence diagrams**
 
@@ -133,9 +169,43 @@ sequenceDiagram
     Order-->>UI: 201 Created + orderId
 ```
 
+### **ProductService — publish product update event**
+
+```mermaid
+
+sequenceDiagram
+    participant Prod as Product Service
+    participant RMQ as RabbitMQ (product.exchange)
+    participant Queue as orders.product.update.name.queue
+
+    Prod->>RMQ: Publish { ProductID, NewName } with routing key `net9.ecomm.aks.product.update.name`
+    Note over RMQ: Exchange routes message to bound queues by routing key
+    RMQ-->>Queue: Store message
+    Prod-->>Prod: Log publish result
+```
+
+### **OrderService — consume product update event**
+
+```mermaid
+sequenceDiagram
+    participant RMQ as RabbitMQ (product.exchange)
+    participant Queue as orders.product.update.name.queue
+    participant Order as OrderService (background consumer)
+    participant Mongo as MongoDB (Order DB)
+
+    Queue->>Order: Deliver message { ProductID, NewName }
+    Order->>Order: Deserialize message
+    Order->>Mongo: Update orders / log change
+    Note right of Order: Ack to RabbitMQ (if using manual ack) the current consumer may use auto-ack
+    Order-->>Order: Continue processing
+```
+
 Notes
 
-- Sequence diagrams show typical synchronous JSON HTTP calls between services. In production you might replace some flows with asynchronous messaging (e.g., event bus) to improve resilience and scalability.
+- Sequence diagrams show typical synchronous JSON HTTP calls between services. The solution now uses RabbitMQ for async product events:
+    - `ProductService` publishes product events to the `product.exchange` exchange (routing key `net9.ecomm.aks.product.update.name`).
+    - `OrderService` runs a background consumer (hosted service) that subscribes to the queue bound to that exchange and applies updates (consumer implemented as `ProductNameUpdateConsumer`).
+    - You can run RabbitMQ locally using the included Docker Compose service (image `rabbitmq:management`).
 - Container ports shown are the exposed container ports. When using `docker-compose` you may map these to different host ports — diagram shows container-level values found in each service's Dockerfile and Kestrel config.
 
 How to preview
