@@ -5,8 +5,8 @@
       "DownstreamPathTemplate": "/api/Orders",
       "DownstreamHostAndPorts": [
         {
-          "Host": "net9-ecomm-orderapi",
-          "Port": 8080
+          "Host": "localhost",
+          "Port": 7000
         }
       ],
       "UpstreamHttpMethod": [
@@ -16,7 +16,7 @@
       ],
       "UpstreamScheme": "http",
       "FileCacheOptions": {
-        "TtlSeconds": 30,
+        "TtlSeconds": 90,
         "Region": "ecomm-net9.orders.region"
       }
     },
@@ -123,7 +123,7 @@
         "EnableRateLimiting": true,
         "Period": "10s",
         "PeriodTimespan": 30,
-        "Limit": 5,
+        "Limit": 25,
         "HttpStatusCode": 429,
         "QuotaExceededMessage": "Too many requests. Please try again later."
       }
