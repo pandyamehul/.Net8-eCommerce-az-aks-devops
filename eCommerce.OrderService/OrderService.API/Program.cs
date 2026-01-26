@@ -33,27 +33,29 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Polly Policies registration for HttpClients
 builder.Services.AddTransient<IUserServicePolicies, UserServicePolicies>();
 builder.Services.AddTransient<IProductServicePolicies, ProductServicePolicies>();
 builder.Services.AddTransient<IPollyPolicies, PollyPolicies>();
 
+// HttpClients with Polly policies - UserServiceClient
 builder.Services.AddHttpClient<UserServiceClient>(client =>
-        {
-            client.BaseAddress = new Uri(
-                $"http://{builder.Configuration["UserServiceName"]}:" +
-                $"{builder.Configuration["UserServicePort"]}"
-            );
-        }
-    )
+    {
+        client.BaseAddress = new Uri(
+            $"http://{builder.Configuration["UserServiceName"]}:" +
+            $"{builder.Configuration["UserServicePort"]}"
+        );
+    })
     .AddPolicyHandler((sp, _) => sp.GetRequiredService<IUserServicePolicies>().GetCombinedPolicy());
 
+// HttpClients with Polly policies - ProductServiceClient
 builder.Services.AddHttpClient<ProductServiceClient>(client =>
-{
-    client.BaseAddress = new Uri(
-        $"http://{builder.Configuration["ProductServiceName"]}:" +
-        $"{builder.Configuration["ProductServicePort"]}"
-    );
-})
+    {
+        client.BaseAddress = new Uri(
+            $"http://{builder.Configuration["ProductServiceName"]}:" +
+            $"{builder.Configuration["ProductServicePort"]}"
+        );
+    })
     .AddPolicyHandler((sp, _) => sp.GetRequiredService<IProductServicePolicies>().GetFallbackPolicy())
     .AddPolicyHandler((sp, _) => sp.GetRequiredService<IProductServicePolicies>().GetBulkheadIsolationPolicy());
 
