@@ -35,7 +35,7 @@ Content-Type: application/json
 # }
   {
     "productID": "11f2e86a-9d5d-42f9-b3c2-3e4d652e3df8",
-    "productName": "Executive Office Desk - updated 4",
+    "productName": "Executive Office Desk - updated 83",
     "category": "Furniture",
     "unitPrice": 269.99,
     "quantityInStock": 10

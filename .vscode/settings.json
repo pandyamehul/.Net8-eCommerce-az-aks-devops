@@ -21,7 +21,7 @@
         "docker-endpoint (via GW)": {
             "user-service-endpoint": "http://localhost:4000/gateway/Users",
             "product-service-endpoint": "http://localhost:4000/gateway",
-            "order-service-endpoint": "http://net9-ecomm-apigateway:4000/gateway"
+            "order-service-endpoint": "http://localhost:4000/gateway"
         }
     }
 }
