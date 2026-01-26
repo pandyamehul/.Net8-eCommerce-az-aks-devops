@@ -1,6 +1,6 @@
 ﻿namespace eCommerce.OrderService.BusinessLogicLayer;
 
-public interface IProductNameUpdateConsumer
+public interface IProductUpdateConsumer
 {
     void Consume();
     void Dispose();

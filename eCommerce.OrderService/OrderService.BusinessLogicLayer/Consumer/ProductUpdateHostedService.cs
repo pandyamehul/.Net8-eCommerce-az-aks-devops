@@ -2,11 +2,11 @@
 
 namespace eCommerce.OrderService.BusinessLogicLayer.Consumer;
 
-public class ProductNameUpdateHostedService : IHostedService
+public class ProductUpdateHostedService : IHostedService
 {
-    private readonly IProductNameUpdateConsumer _productNameUpdateConsumer;
+    private readonly IProductUpdateConsumer _productNameUpdateConsumer;
 
-    public ProductNameUpdateHostedService(IProductNameUpdateConsumer consumer)
+    public ProductUpdateHostedService(IProductUpdateConsumer consumer)
     {
         _productNameUpdateConsumer = consumer;
     }

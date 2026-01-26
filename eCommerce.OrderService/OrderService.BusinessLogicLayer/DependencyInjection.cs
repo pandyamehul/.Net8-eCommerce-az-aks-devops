@@ -42,9 +42,11 @@ public static class DependencyInjection
             options.Configuration = $"{configuration["REDIS_HOST"]}:{configuration["REDIS_PORT"]}";
         });
 
-        services.AddTransient<IProductNameUpdateConsumer, ProductNameUpdateConsumer>();
+        services.AddTransient<IProductUpdateConsumer, ProductUpdateConsumer>();
+        services.AddTransient<IProductUpdateConsumer, ProductDeleteConsumer>();
 
-        services.AddHostedService<ProductNameUpdateHostedService>();
+        services.AddHostedService<ProductUpdateHostedService>();
+        services.AddHostedService<ProductDeleteHostedService>();
 
         return services;
     }
