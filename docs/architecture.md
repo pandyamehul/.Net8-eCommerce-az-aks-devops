@@ -24,6 +24,7 @@ graph TB
         PG[(PostgreSQL<br/>User DB<br/>Port: 5432)]
         MY[(MySQL<br/>Product DB<br/>Port: 3306)]
         MG[(MongoDB<br/>Order DB<br/>Port: 27018)]
+        RED[(Redis Cache<br/>Port: 6379)]
     end
 
     subgraph Container Orchestration
@@ -45,10 +46,10 @@ graph TB
     PS --> | Async comm. - PUB: message/event via queues | RMQ   
     OS --> | Async comm. - SUB: message/event via queues | RMQ
     
-
     US --> |Dapper Queries| PG
     PS --> |EF Core| MY
     OS --> |MongoDB Driver| MG    
+    OS --> |Redis Cache| RED    
 
     US -.-> |Docker Image| GHCR
     PS -.-> |Docker Image| GHCR
@@ -60,7 +61,7 @@ graph TB
     Docker --> |Manages| PG
     Docker --> |Manages| MY
     Docker --> |Manages| MG
-
+    Docker --> |Manages| RED
     %% GHCR -.->|Deploy| LinuxVM
     %% Docker -.->|Runs On| LinuxVM
 
@@ -76,8 +77,37 @@ graph TB
     style Docker fill:#2496ED,stroke:#333,stroke-width:2px,color:#fff
     style GHCR fill:#181717,stroke:#333,stroke-width:2px,color:#fff
     style RMQ fill:#BB5566,stroke:#333,stroke-width:2px,color:#fff,text-align:left
+    style RED fill:#D82C20,stroke:#333,stroke-width:2px,color:#fff
+        
 ```
 
+## **Cache (Redis)**
+
+- **Role:** Distributed in-memory cache for frequently read data (product/catalog lookups), session state, and short-lived data to reduce DB load and lower request latency.
+- **Placement:** A shared cache instance used by all services (User, Product, Order). In cloud deployments prefer a managed service such as **Azure Cache for Redis**.
+- **Common usage patterns:**  
+  - **Read-through / Write-through cache:** Cache product details, pricing snapshots, and computed DTOs.
+  - **Session cache:** Store minimal session data or JWT blacklists (avoid storing PII).
+  - **Distributed locks / counters:** Use Redis primitives (SETNX, INCR) with care.
+  - **Pub/Sub:** Optionally use Redis Pub/Sub for lightweight invalidation or cache-churn signals (RabbitMQ remains primary event bus).
+- **Configuration (env vars):** `REDIS_HOST`, `REDIS_PORT` (default `6379`), `REDIS_PASSWORD` (when enabled), `REDIS_SSL=true|false`.
+- **.NET example (StackExchange.Redis):**
+
+```csharp
+var conn = ConnectionMultiplexer.Connect($"{env:REDIS_HOST}:{env:REDIS_PORT},password={env:REDIS_PASSWORD}");
+var db = conn.GetDatabase();
+await db.StringSetAsync("product:123", json, TimeSpan.FromMinutes(10));
+var cached = await db.StringGetAsync("product:123");
+```
+
+- **Resilience & best practices:**
+  - Set sensible TTLs (e.g., 5–60 minutes) depending on staleness tolerance.
+  - Design for cache misses — always fall back to the authoritative DB and repopulate the cache.
+  - Use connection pooling and a singleton `ConnectionMultiplexer` per process.
+  - Monitor cache hit rate and eviction metrics; provision memory and enable persistence or replication per SLAs.
+  - For production on Azure, enable clustering or premium tiers for replication and better throughput.
+
+> Dev tip: run Redis locally via Docker (`docker run -p 6379:6379 redis:7`) for local dev and integration tests.
 > **Note**: OrderService uses HTTP clients to call other services. Default container targets (from Dockerfile envs): ProductService at port 5247, UserService at port 9090.
 
 ## **Service details and environment notes**
@@ -203,9 +233,9 @@ sequenceDiagram
 Notes
 
 - Sequence diagrams show typical synchronous JSON HTTP calls between services. The solution now uses RabbitMQ for async product events:
-    - `ProductService` publishes product events to the `product.exchange` exchange (routing key `net9.ecomm.aks.product.update.name`).
-    - `OrderService` runs a background consumer (hosted service) that subscribes to the queue bound to that exchange and applies updates (consumer implemented as `ProductNameUpdateConsumer`).
-    - You can run RabbitMQ locally using the included Docker Compose service (image `rabbitmq:management`).
+  - `ProductService` publishes product events to the `product.exchange` exchange (routing key `net9.ecomm.aks.product.update.name`).
+  - `OrderService` runs a background consumer (hosted service) that subscribes to the queue bound to that exchange and applies updates (consumer implemented as `ProductNameUpdateConsumer`).
+  - You can run RabbitMQ locally using the included Docker Compose service (image `rabbitmq:management`).
 - Container ports shown are the exposed container ports. When using `docker-compose` you may map these to different host ports — diagram shows container-level values found in each service's Dockerfile and Kestrel config.
 
 How to preview

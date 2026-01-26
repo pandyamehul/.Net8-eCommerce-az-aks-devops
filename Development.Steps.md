@@ -27,6 +27,9 @@
     - [Bug Fixes in Order Microservice after testing](#bug-fixes-in-order-microservice-after-testing)
     - [Order Service itegration with User Service and Product Service](#order-service-itegration-with-user-service-and-product-service)
     - [Fault Tolerence using Polly implementation in Order Service](#fault-tolerence-using-polly-implementation-in-order-service)
+    - [Redis Cache Integration for Caching Frequently Accessed Data](#redis-cache-integration-for-caching-frequently-accessed-data)
+    - [API Gateway (Ocelot) Setup and Configuration](#api-gateway-ocelot-setup-and-configuration)
+    - [Asynchronous Communication using RabbitMQ](#asynchronous-communication-using-rabbitmq)
 
 ## Background
 
@@ -45,27 +48,39 @@
 
 ## Technologies & Patterns Used
 
+Languages, Frameworks, Libraries, Tools, Architectural and Design Patterns used in this project:
+
+**Technologies and Frameworks**:
+
 - ASP.NET Core 9 (Web API in c#)
 - Angular 17 (Frontend application)
+- .net framework 9
 - C# 12 (Programming Language)
 
-- REST API (HTTP Methods - GET, POST, PUT, DELETE)
+**Architectural and Design Patterns**:
+
+- Synchronous communication using REST API (HTTP Methods - GET, POST, PUT, DELETE)
 - Mapster (Object to Object Mapping), earlier used AutoMapper
 - FluentValidation (Request validation)
 - CORS Policy Configuration
 - Fault Tolerance and Resilience (Polly - Future Implementation: Retry, Circuit Breaker, Fallback, Bulkhead Isolation, Timeout)
-- Logging and Monitoring (ILogger - Future Implementation)
+- Logging (ILogger) and Monitoring
 - Swagger (API Documentation)
-
 - Microservices Architecture
 - Dependency Injection (DI) Pattern
 - Repository Pattern
 - Dapper (Micro ORM for data access)
+- Asynchronous communication using Message Broker (RabbitMQ)
+- API Gateway (Ocelot) with Polly integration for Quantum of Service, retry policies, response caching, and API rate limiting (throttling)
+
+**Databases used**:
 
 - PostgreSQL (Relational Database) in docker container
 - MySQL (Relational Database) in docker container
 - MongoDb (NoSQL Database) in docker container
 - Redis Cache (In-memory centralized caching) in docker container
+
+**Containerization and Orchestration**:
 
 - Docker (Containerization)
 - Docker Compose (Multi-container orchestration)
@@ -539,3 +554,59 @@ exit
 - Tested Order Service integration with User Service and Product Service with fault scenarios (service unavailability, timeouts etc.)
 - Verified Polly policies are working as expected and Order Service handles failures gracefully.
 - Completed Fault Tolerence using Polly implementation in Order Service.
+
+**Implemented following polly policies**:
+
+*Order Service*:
+
+- Retry Policy: Automatically retries failed requests a specified number of times with exponential backoff.
+- Circuit Breaker Policy: Opens the circuit after a defined number of consecutive failures, preventing further requests for a specified duration.
+- Timeout Policy: Sets a maximum duration for requests, aborting them if they exceed the limit.
+- Fallback Policy: Provides a default response or action when all retries fail or the circuit is open.
+- Bulkhead Isolation: Limits the number of concurrent requests to prevent resource exhaustion.
+
+*API Gateway (Ocelot)*:
+
+- Quality of Service (QoS) and Retry options Policy: Ensures that requests to downstream services meet defined quality standards, with retry mechanisms for transient failures.
+- Caching Policy: Caches successful responses for a defined duration to reduce load on downstream services.
+- Rate Limiting Policy: Controls the rate of requests to downstream services to prevent overload.
+
+### Redis Cache Integration for Caching Frequently Accessed Data
+
+- Added StackExchange.Redis nuget package to Order Service project.
+- Configured Redis connection settings in appsettings.json and docker-compose files.
+- Implemented RedisCacheService to handle caching operations.
+- Updated OrderService to cache frequently accessed data (e.g., product details update and deletes) using Redis.
+- Tested Redis caching functionality to ensure data is cached and retrieved correctly.
+- Verified performance improvements with caching in place.
+- Completed Redis Cache integration in Order Service.
+
+### API Gateway (Ocelot) Setup and Configuration
+
+- Created new ASP.net web API project for API Gateway using Ocelot.
+- Added necessary Nuget packages - Ocelot, Polly etc.
+- Configured Ocelot.json file to define routes for User Service, Product Service, and Order Service.
+- Implemented Polly policies (QoS, Retry, Caching, Rate Limiting) in Ocelot configuration.
+- Tested API Gateway routes to ensure correct routing to downstream services.
+- Verified Polly policies are working as expected in API Gateway.
+- Completed API Gateway (Ocelot) setup and configuration with all required features.
+- Deployed API Gateway along with microservices in local docker setup using docker-compose file.
+- Tested end-to-end flow of eCommerce application through API Gateway to ensure all services are working together seamlessly.
+- Verified API Gateway handles requests, applies policies, and routes to microservices correctly.
+- Completed deployment and testing of eCommerce application with API Gateway in local docker environment.
+- Documented all steps, configurations, and commands used for setting up API Gateway and microservices for future reference.
+
+### Asynchronous Communication using RabbitMQ
+
+- Added RabbitMQ.Client nuget package to Order and Product Service project.
+- Configured RabbitMQ connection settings in appsettings.json and docker-compose files.
+- Implemented MessagePublisher to publish messages to RabbitMQ exchange from Product Service on product create, update, delete events.
+- Implemented MessageSubscriber in Order Service to consume messages from RabbitMQ queue and update order data accordingly.
+- Tested RabbitMQ messaging functionality to ensure messages are published and consumed correctly.
+- Verified asynchronous communication between Product Service and Order Service using RabbitMQ.
+- Completed RabbitMQ integration for asynchronous communication in eCommerce application.
+- Deployed RabbitMQ along with microservices in local docker setup using docker-compose file.
+- Tested end-to-end flow of eCommerce application with RabbitMQ to ensure all services communicate asynchronously as expected.
+- Verified RabbitMQ handles message publishing and consumption correctly between services.
+- Completed deployment and testing of eCommerce application with RabbitMQ in local docker environment.
+- Documented all steps, configurations, and commands used for setting up RabbitMQ and microservices for future reference.
