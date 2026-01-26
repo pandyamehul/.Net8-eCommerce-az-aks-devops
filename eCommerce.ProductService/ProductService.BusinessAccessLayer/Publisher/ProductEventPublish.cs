@@ -9,8 +9,8 @@ namespace eCommerce.ProductService.BusinessAccessLayer.Publisher;
 public class ProductEventPublish : IProductEvent, IDisposable
 {
     private readonly IConfiguration _configuration;
-    private readonly IChannel _channel;
-    private readonly IConnection _connection;
+    private readonly dynamic _channel;
+    private readonly dynamic _connection;
     private readonly ILogger<ProductEventPublish> _logger;
 
     public ProductEventPublish(IConfiguration configuration, ILogger<ProductEventPublish> logger)
@@ -32,7 +32,7 @@ public class ProductEventPublish : IProductEvent, IDisposable
         };
 
         _logger.LogInformation("Creating RabbitMQ connection and channel...");
-        // NEW CLIENT API: create connection and channel asynchronously, then block
+        // Use async factory methods if synchronous APIs are not available in the installed client
         _connection = connectionFactory
             .CreateConnectionAsync()
             .GetAwaiter()
@@ -45,24 +45,28 @@ public class ProductEventPublish : IProductEvent, IDisposable
         _logger.LogInformation("RabbitMQ connection and channel created.");
     }
 
-    public void Publish<T>(string routingKey, T message)
+    public void Publish<T>(Dictionary<string, object> headers, T message)
     {
         string messageJson = JsonSerializer.Serialize(message);
         byte[] messageBodyInBytes = Encoding.UTF8.GetBytes(messageJson);
 
         string exchangeName = _configuration["RabbitMQ_Products_Exchange"]!;
 
-        _logger.LogInformation("Publishing message to exchange {Exchange} with routing key {RoutingKey}: {MessageJson}",
-            exchangeName, routingKey, messageJson);
+        _logger.LogInformation("Publishing message to exchange {Exchange} with routing key {headers}: {MessageJson}",
+            exchangeName, headers, messageJson);
 
-        // Adjust to your actual IChannel API if method names differ
+        // Declare exchange and publish using synchronous IModel API
+        // Use dynamic invocation to tolerate different RabbitMQ.Client API shapes in the environment
         _channel
-            .ExchangeDeclareAsync(exchangeName, ExchangeType.Direct, durable: true)
+            .ExchangeDeclareAsync(exchange: exchangeName, type: ExchangeType.Headers, durable: true)
             .GetAwaiter()
             .GetResult();
 
+        var basicProperties = _channel.CreateBasicProperties();
+        basicProperties.Headers = headers;
+
         _channel
-            .BasicPublishAsync(exchangeName, routingKey, body: messageBodyInBytes)
+            .BasicPublishAsync(exchange: exchangeName, routingKey: string.Empty, basicProperties: basicProperties, body: messageBodyInBytes)
             .GetAwaiter()
             .GetResult();
 

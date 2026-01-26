@@ -80,6 +80,22 @@ public class ProductsService : IProductsService
 
         //Attempt to delete product
         bool isDeleted = await _productsRepository.DeleteProduct(productID);
+        //posting a message to the message queue that announces the consumers about the deleted product details
+
+        //Publish message of product.delete
+        if (isDeleted)
+        {
+            ProductDeletionEvent message = new ProductDeletionEvent(existingProduct.ProductID, existingProduct.ProductName);
+            //string routingKey = "product.delete";
+
+            var headers = new Dictionary<string, object>()
+            {
+                { "event", "product.delete" },
+                { "RowCount", 1 }
+            };
+
+            _productEvent.Publish(headers, message);
+        }
         return isDeleted;
     }
 
@@ -144,7 +160,7 @@ public class ProductsService : IProductsService
         Product product = _mapper.Map<Product>(productUpdateRequest);
 
         //Check if product name is changed
-        bool isProductNameChanged = productUpdateRequest.ProductName != existingProduct.ProductName;
+        //bool isProductNameChanged = productUpdateRequest.ProductName != existingProduct.ProductName;
 
         //Update product in database
         Product? updatedProduct = await _productsRepository.UpdateProduct(product);
@@ -155,15 +171,22 @@ public class ProductsService : IProductsService
         }
 
         //Publish product.update.name message to the exchange
-        if (isProductNameChanged)
-        {
-            // Publish event to RabbitMQ exchange about product name update
-            // Note: routing key should match the one used by the consumer in OrderService
-            string routingKey = "net9.ecomm.aks.product.update.name";
-            var message = new ProductNameUpdateEvent(product.ProductID, product.ProductName);
+        // if (isProductNameChanged)
+        // {
+        //     // Publish event to RabbitMQ exchange about product name update
+        //     // Note: routing key should match the one used by the consumer in OrderService
+        //     string routingKey = "net9.ecomm.aks.product.update.name";
+        //     var message = new ProductNameUpdateEvent(product.ProductID, product.ProductName);
 
-            _productEvent.Publish<ProductNameUpdateEvent>(routingKey, message);
-        }
+        //     _productEvent.Publish<ProductNameUpdateEvent>(routingKey, message);
+        // }
+
+        var headers = new Dictionary<string, object>()
+        {
+            { "event", "product.update" },
+            { "RowCount", 1 }
+        };
+        _productEvent.Publish<Product>(headers, product);
 
         ProductResponse? updatedProductResponse = _mapper.Map<ProductResponse>(updatedProduct);
 
