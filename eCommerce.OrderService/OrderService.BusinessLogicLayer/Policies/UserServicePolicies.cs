@@ -61,11 +61,22 @@ public class UserServicePolicies : IUserServicePolicies
 
     public IAsyncPolicy<HttpResponseMessage> GetCombinedPolicy()
     {
+        // Retry policy - 5 retries with exponential backoff
         var retryPolicy = _pollyPolicies.GetRetryPolicy(5);
+
+        // Circuit Breaker policy - Break circuit after 3 consecutive failures for 2 minutes
         var circuitBreakerPolicy = _pollyPolicies.GetCircuitBreakerPolicy(3, TimeSpan.FromMinutes(2));
+
+        // Timeout policy - Timeout after 5 seconds
         var timeoutPolicy = _pollyPolicies.GetTimeoutPolicy(TimeSpan.FromSeconds(5));
 
-        AsyncPolicyWrap<HttpResponseMessage> wrappedPolicy = Policy.WrapAsync(retryPolicy, circuitBreakerPolicy, timeoutPolicy);
+        // Combine policies using PolicyWrap
+        AsyncPolicyWrap<HttpResponseMessage> wrappedPolicy = Policy.WrapAsync(
+            retryPolicy,
+            circuitBreakerPolicy,
+            timeoutPolicy
+        );
+
         return wrappedPolicy;
     }
 }

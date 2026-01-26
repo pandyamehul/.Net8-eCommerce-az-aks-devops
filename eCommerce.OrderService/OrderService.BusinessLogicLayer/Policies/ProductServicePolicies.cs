@@ -20,6 +20,7 @@ public class ProductServicePolicies : IProductServicePolicies
 
     public IAsyncPolicy<HttpResponseMessage> GetFallbackPolicy()
     {
+        // Fallback policy to return dummy product data when the ProductService is unavailable
         AsyncFallbackPolicy<HttpResponseMessage> policy = Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
           .FallbackAsync((context) =>
           {
@@ -31,7 +32,7 @@ public class ProductServicePolicies : IProductServicePolicies
                     Category: "Temporarily Unavailable (fallback)",
                     UnitPrice: 0,
                     QuantityInStock: 0
-            );
+              );
 
               var response = new HttpResponseMessage(System.Net.HttpStatusCode.OK)
               {
@@ -46,8 +47,9 @@ public class ProductServicePolicies : IProductServicePolicies
 
     public IAsyncPolicy<HttpResponseMessage> GetBulkheadIsolationPolicy()
     {
+        // Bulkhead Isolation policy to limit the number of concurrent requests to the ProductService
         AsyncBulkheadPolicy<HttpResponseMessage> policy = Policy.BulkheadAsync<HttpResponseMessage>(
-          maxParallelization: 2, //Allows up to 2 concurrent requests
+          maxParallelization: 10, //Allows up to 10 concurrent requests
           maxQueuingActions: 40, //Queue up to 40 additional requests
           onBulkheadRejectedAsync: (context) =>
           {
