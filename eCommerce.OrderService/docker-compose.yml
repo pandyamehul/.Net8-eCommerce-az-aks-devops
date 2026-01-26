@@ -76,7 +76,7 @@ services:
       - ecomm.net9.aks.network
 
   net9-ecomm-userapi:
-    image: net9-ecomm-userapi:2.0
+    image: net9-ecomm-userapi:2.1
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTP_ENVIRONMENT=Development
@@ -94,7 +94,7 @@ services:
       - ecomm.net9.aks.pg.userdb
 
   net9-ecomm-productapi:
-    image: net9-ecomm-productapi:2.2
+    image: net9-ecomm-productapi:2.4
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_ENVIRONMENT=Development
