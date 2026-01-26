@@ -12,7 +12,7 @@ public class DapperDbContext
     public DapperDbContext(IConfiguration configuration)
     {
         _configuration = configuration;
-        string connectionString = _configuration.GetConnectionString("PostgresConnection");
+        string connectionString = _configuration.GetConnectionString("PostgresConnection")!;
 
         // replavce connection string with environment variable if exists
         connectionString = connectionString
