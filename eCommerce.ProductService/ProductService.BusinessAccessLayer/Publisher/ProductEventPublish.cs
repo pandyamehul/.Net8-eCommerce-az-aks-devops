@@ -9,8 +9,8 @@ namespace eCommerce.ProductService.BusinessAccessLayer.Publisher;
 public class ProductEventPublish : IProductEvent, IDisposable
 {
     private readonly IConfiguration _configuration;
-    private readonly dynamic _channel;
-    private readonly dynamic _connection;
+    private IChannel _channel;
+    private IConnection _connection;
     private readonly ILogger<ProductEventPublish> _logger;
 
     public ProductEventPublish(IConfiguration configuration, ILogger<ProductEventPublish> logger)
@@ -62,11 +62,19 @@ public class ProductEventPublish : IProductEvent, IDisposable
             .GetAwaiter()
             .GetResult();
 
-        var basicProperties = _channel.CreateBasicProperties();
-        basicProperties.Headers = headers;
+        var basicProperties = new BasicProperties
+        {
+            Headers = headers!
+        };
 
         _channel
-            .BasicPublishAsync(exchange: exchangeName, routingKey: string.Empty, basicProperties: basicProperties, body: messageBodyInBytes)
+            .BasicPublishAsync(
+                exchange: exchangeName, 
+                routingKey: string.Empty, mandatory: false, 
+                basicProperties: basicProperties, 
+                body: messageBodyInBytes, 
+                cancellationToken: default
+            )
             .GetAwaiter()
             .GetResult();
 
