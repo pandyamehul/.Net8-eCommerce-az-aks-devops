@@ -74,8 +74,11 @@ app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+// https redirection only in non-development environments
+if (!app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
+
 //Auth
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
