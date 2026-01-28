@@ -3,7 +3,7 @@ Content-Type: application/json
 
 ###
 
-GET {{product-service-endpoint}}/products/search/product-id/11f2e86a-9d5d-42f9-b3c2-3e4d652e3df89
+GET {{product-service-endpoint}}/products/search/product-id/9e7e7085-6f4e-4921-8f15-c59f084080f9
 Content-Type: application/json
 
 ###
@@ -16,7 +16,7 @@ POST {{product-service-endpoint}}/products
 Content-Type: application/json
 
 {
-  "productName": "Executive Office Desk 2",
+  "productName": "Executive Office Desk 26",
   "category": "Furniture",
   "unitPrice": 399.99,
   "quantityInStock": 20
@@ -35,14 +35,14 @@ Content-Type: application/json
 # }
   {
     "productID": "11f2e86a-9d5d-42f9-b3c2-3e4d652e3df8",
-    "productName": "Executive Office Desk - updated 83",
+    "productName": "Executive Office Desk - updated 28",
     "category": "Furniture",
     "unitPrice": 269.99,
     "quantityInStock": 10
   }
 ###
 
-DELETE {{product-service-endpoint}}/products/88cb4583-e3ef-48e3-a113-1c6353fe677f
+DELETE {{product-service-endpoint}}/products/1495b642-8420-46ea-a96c-1181133a98a3
 Content-Type: application/json
 
 ###

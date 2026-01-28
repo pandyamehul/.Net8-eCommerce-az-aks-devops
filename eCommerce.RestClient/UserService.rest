@@ -14,12 +14,12 @@ POST {{user-service-endpoint}}/auth/login
 Content-Type: application/json
 
 {
-  "Email": "newuser@example.com",
-  "PasswordHash": "NewUser@123"
+  "Email": "test1@example.com",
+  "PasswordHash": "password1"
 }
 ###
 
-GET {{user-service-endpoint}}/users/07248f51-cab1-49b6-91aa-b8422c980154
+GET {{user-service-endpoint}}/c32f8b42-60e6-4c02-90a7-9143ab37189f
 Content-Type: application/json
 
 ###
