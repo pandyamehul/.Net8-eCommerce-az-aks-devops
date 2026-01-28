@@ -40,7 +40,7 @@ public class UserServiceClient
                 return userFromCache;
             }
 
-            HttpResponseMessage response = await _httpClient.GetAsync($"/api/users/{userID}");
+            HttpResponseMessage response = await _httpClient.GetAsync($"/gateway/users/{userID}");
 
             if (!response.IsSuccessStatusCode)
             {
