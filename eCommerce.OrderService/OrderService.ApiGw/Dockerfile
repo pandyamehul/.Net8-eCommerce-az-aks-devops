@@ -20,4 +20,8 @@ RUN dotnet publish "./OrderService.ApiGw.csproj" -c $BUILD_CONFIGURATION -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+# IMPORTANT: Explicitly copy ocelot.json
+COPY OrderService.ApiGw/ocelot.json ./ocelot.json
+
 ENTRYPOINT ["dotnet", "OrderService.ApiGw.dll"]

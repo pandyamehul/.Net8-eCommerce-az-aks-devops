@@ -13,4 +13,10 @@
     <PackageReference Include="Ocelot.Provider.Polly" Version="23.3.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="ocelot.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
 </Project>
