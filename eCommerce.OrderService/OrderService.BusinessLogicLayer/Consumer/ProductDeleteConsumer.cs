@@ -1,5 +1,4 @@
-﻿using eCommerce.OrderService.BusinessLogicLayer.DTO;
-using Microsoft.Extensions.Caching.Distributed;
+﻿using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Text;
@@ -9,17 +8,17 @@ using RabbitMQ.Client.Events;
 
 namespace eCommerce.OrderService.BusinessLogicLayer.Consumer;
 
-public class ProductDeleteConsumer : IDisposable, IProductUpdateConsumer
+public class ProductDeleteConsumer : IDisposable, IProductDeleteConsumer
 {
     private readonly IConfiguration _configuration;
     private readonly IChannel _channel;
     private readonly IConnection _connection;
-    private readonly ILogger<ProductUpdateConsumer> _logger;
+    private readonly ILogger<ProductDeleteConsumer> _logger;
     private readonly IDistributedCache _cache;
 
     public ProductDeleteConsumer(
         IConfiguration configuration,
-        ILogger<ProductUpdateConsumer> logger,
+        ILogger<ProductDeleteConsumer> logger,
         IDistributedCache cache
     )
     {
@@ -74,7 +73,7 @@ public class ProductDeleteConsumer : IDisposable, IProductUpdateConsumer
 
         //Create exchange
         string exchangeName = _configuration["RabbitMQ_Products_Exchange"]!;
-        _channel.ExchangeDeclareAsync(exchange: exchangeName, type: ExchangeType.Direct, durable: true).GetAwaiter().GetResult();
+        _channel.ExchangeDeclareAsync(exchange: exchangeName, type: ExchangeType.Headers, durable: true).GetAwaiter().GetResult();
 
         //Create message queue
         //x-message-ttl | x-max-length | x-expired 
@@ -101,19 +100,18 @@ public class ProductDeleteConsumer : IDisposable, IProductUpdateConsumer
 
             if (message != null)
             {
-                //ProductNameUpdateMessage? productNameUpdateMessage = JsonSerializer.Deserialize<ProductNameUpdateMessage>(message);
-                ProductDTO? productDTO = JsonSerializer.Deserialize<ProductDTO>(message);
+                ProductDeletionMessage? productDeletionMessage = JsonSerializer.Deserialize<ProductDeletionMessage>(message);
 
-                if (productDTO != null)
+                if (productDeletionMessage != null)
                 {
-                    await HandleProductUpdation(productDTO);
+                    await HandleProductDeletion(productDeletionMessage.ProductID);
                 }
                 else
                 {
                     _logger.LogWarning("Received null ProductDTO in message.");
                 }
 
-                _logger.LogInformation($"Product name updated: {productDTO!.ProductID}, New name: {productDTO.ProductName}");
+                _logger.LogInformation($"Product deleted: {productDeletionMessage!.ProductID}, Product name: {productDeletionMessage!.ProductName}");
             }
 
             //await _channel.BasicConsumeAsync(queue: queueName, consumer: consumer, autoAck: true);
@@ -126,23 +124,17 @@ public class ProductDeleteConsumer : IDisposable, IProductUpdateConsumer
             .GetResult();
     }
 
+
     /// <summary>
     /// Handles the product name update by updating the cache. 
     /// </summary>
     /// <param name="productDTO"></param>
     /// <returns></returns>
-    private async Task HandleProductUpdation(ProductDTO productDTO)
+    private async Task HandleProductDeletion(Guid productID)
     {
-        _logger.LogInformation($"Product name updated: {productDTO.ProductID}, New name: {productDTO.ProductName}");
+        string cacheKeyToWrite = $"product:{productID}";
 
-        string productJson = JsonSerializer.Serialize(productDTO);
-
-        DistributedCacheEntryOptions options = new DistributedCacheEntryOptions()
-          .SetAbsoluteExpiration(TimeSpan.FromSeconds(300));
-
-        string cacheKeyToWrite = $"product:{productDTO.ProductID}";
-
-        await _cache.SetStringAsync(cacheKeyToWrite, productJson, options);
+        await _cache.RemoveAsync(cacheKeyToWrite);
     }
 
     public void Dispose()

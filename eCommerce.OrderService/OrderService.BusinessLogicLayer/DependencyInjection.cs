@@ -43,7 +43,7 @@ public static class DependencyInjection
         });
 
         services.AddTransient<IProductUpdateConsumer, ProductUpdateConsumer>();
-        services.AddTransient<IProductUpdateConsumer, ProductDeleteConsumer>();
+        services.AddTransient<IProductDeleteConsumer, ProductDeleteConsumer>();
 
         services.AddHostedService<ProductUpdateHostedService>();
         services.AddHostedService<ProductDeleteHostedService>();
