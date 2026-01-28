@@ -76,7 +76,7 @@ public class ProductUpdateConsumer : IDisposable, IProductUpdateConsumer
         string exchangeName = _configuration["RabbitMQ_Products_Exchange"]!;
         _channel.ExchangeDeclareAsync(
                 exchange: exchangeName, 
-                type: ExchangeType.Direct, 
+                type: ExchangeType.Headers, 
                 durable: true)
             .GetAwaiter()
             .GetResult();
@@ -106,23 +106,24 @@ public class ProductUpdateConsumer : IDisposable, IProductUpdateConsumer
 
             if (message != null)
             {
-                ProductDeletionMessage? productDeletionMessage = JsonSerializer.Deserialize<ProductDeletionMessage>(message);
+                //ProductNameUpdateMessage? productNameUpdateMessage = JsonSerializer.Deserialize<ProductNameUpdateMessage>(message);
+                ProductDTO? productDTO = JsonSerializer.Deserialize<ProductDTO>(message);
 
-                if (productDeletionMessage != null)
+                if (productDTO != null)
                 {
-                    await HandleProductDeletion(productDeletionMessage.ProductID);
+                    await HandleProductUpdation(productDTO);
                 }
                 else
                 {
                     _logger.LogWarning("Received null ProductDTO in message.");
                 }
 
-                _logger.LogInformation($"Product deleted: {productDeletionMessage!.ProductID}, Product name: {productDeletionMessage!.ProductName}");
+                _logger.LogInformation($"Product name updated: {productDTO!.ProductID}, New name: {productDTO.ProductName}");
             }
 
             //await _channel.BasicConsumeAsync(queue: queueName, consumer: consumer, autoAck: true);
         };
-
+        
         // Start consuming messages
         _channel
             .BasicConsumeAsync(queue: queueName, consumer: consumer, autoAck: true)
@@ -130,16 +131,24 @@ public class ProductUpdateConsumer : IDisposable, IProductUpdateConsumer
             .GetResult();
     }
 
+
     /// <summary>
     /// Handles the product name update by updating the cache. 
     /// </summary>
     /// <param name="productDTO"></param>
     /// <returns></returns>
-    private async Task HandleProductDeletion(Guid productID)
+    private async Task HandleProductUpdation(ProductDTO productDTO)
     {
-        string cacheKeyToWrite = $"product:{productID}";
+        _logger.LogInformation($"Product name updated: {productDTO.ProductID}, New name: {productDTO.ProductName}");
 
-        await _cache.RemoveAsync(cacheKeyToWrite);
+        string productJson = JsonSerializer.Serialize(productDTO);
+
+        DistributedCacheEntryOptions options = new DistributedCacheEntryOptions()
+          .SetAbsoluteExpiration(TimeSpan.FromSeconds(300));
+
+        string cacheKeyToWrite = $"product:{productDTO.ProductID}";
+
+        await _cache.SetStringAsync(cacheKeyToWrite, productJson, options);
     }
 
 
