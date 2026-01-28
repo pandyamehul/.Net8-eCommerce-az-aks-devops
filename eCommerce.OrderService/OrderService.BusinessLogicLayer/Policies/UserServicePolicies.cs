@@ -64,8 +64,8 @@ public class UserServicePolicies : IUserServicePolicies
         // Retry policy - 5 retries with exponential backoff
         var retryPolicy = _pollyPolicies.GetRetryPolicy(5);
 
-        // Circuit Breaker policy - Break circuit after 3 consecutive failures for 2 minutes
-        var circuitBreakerPolicy = _pollyPolicies.GetCircuitBreakerPolicy(3, TimeSpan.FromMinutes(2));
+        // Circuit Breaker policy - Break circuit after 10 consecutive failures for 30 seconds
+        var circuitBreakerPolicy = _pollyPolicies.GetCircuitBreakerPolicy(10, TimeSpan.FromSeconds(30));
 
         // Timeout policy - Timeout after 5 seconds
         var timeoutPolicy = _pollyPolicies.GetTimeoutPolicy(TimeSpan.FromSeconds(5));
