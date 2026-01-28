@@ -77,6 +77,8 @@ services:
 
   net9-ecomm-userapi:
     image: net9-ecomm-userapi:2.1
+    container_name: net9-ecomm-userapi
+    hostname: net9-ecomm-userapi
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTP_ENVIRONMENT=Development
@@ -95,6 +97,8 @@ services:
 
   net9-ecomm-productapi:
     image: net9-ecomm-productapi:2.4
+    container_name: net9-ecomm-productapi
+    hostname: net9-ecomm-productapi
     environment:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_ENVIRONMENT=Development
@@ -119,11 +123,13 @@ services:
   net9-ecomm-orderapi:
     image: net9-ecomm-orderapi
     hostname: net9-ecomm-orderapi
+    container_name: net9-ecomm-orderapi
     build:
       context: .
       dockerfile: OrderService.API/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
       - MONGODB_HOST=ecomm.net9.aks.mongo.orderdb
       - MONGODB_PORT=27017
       - MONGODB_DATABASE=OrdersDatabase
@@ -134,7 +140,6 @@ services:
       - RabbitMQ_Password=guest
       - RabbitMQ_Port=5672
       - RabbitMQ_Products_Exchange=product.exchange
-      - OCELOT_CONFIGFILE=ocelot.json
       # Local docker endpoint settings for dependent services (used in debugging mode)
       # - UserServiceName=net9-ecomm-userapi
       # - UserServicePort=9090
@@ -153,17 +158,28 @@ services:
       - ecomm.net9.aks.mongo.orderdb.network
     depends_on:
       - ecomm.net9.aks.mongo.orderdb
+      - ecomm.net9.aks.redis.cache
+      - ecomm.net9.aks.msg.queues
 
   net9-ecomm-apigateway:
     image: net9-ecomm-apigateway
     hostname: net9-ecomm-apigateway
+    container_name: net9-ecomm-apigateway
     build:
       context: .
       dockerfile: ./OrderService.ApiGw/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - OCELOT_CONFIGFILE=ocelot.json
     ports:
       - "4000:8080"
     networks:
       - ecomm.net9.aks.network
+    depends_on:
+      - net9-ecomm-userapi
+      - net9-ecomm-productapi
+      - net9-ecomm-orderapi
 
 volumes:
   ecomm.net9.aks.pg.userdb.storage:
