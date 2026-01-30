@@ -30,6 +30,7 @@
     - [Redis Cache Integration for Caching Frequently Accessed Data](#redis-cache-integration-for-caching-frequently-accessed-data)
     - [API Gateway (Ocelot) Setup and Configuration](#api-gateway-ocelot-setup-and-configuration)
     - [Asynchronous Communication using RabbitMQ](#asynchronous-communication-using-rabbitmq)
+  - [Microservice deployment to Azure - AKS and Azure DevOps](#microservice-deployment-to-azure---aks-and-azure-devops)
 
 ## Background
 
@@ -610,3 +611,5 @@ exit
 - Verified RabbitMQ handles message publishing and consumption correctly between services.
 - Completed deployment and testing of eCommerce application with RabbitMQ in local docker environment.
 - Documented all steps, configurations, and commands used for setting up RabbitMQ and microservices for future reference.
+
+## Microservice deployment to Azure - AKS and Azure DevOps
